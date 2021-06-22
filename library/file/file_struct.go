@@ -20,9 +20,9 @@ type File struct {
 func (this *File) fileInfo() *File {
 	fi, err := os.Stat(this.name)
 	if err != nil {
-		return nil
+		return this
 	} else if os.IsNotExist(err) {
-		return nil
+		return this
 	}
 	this.size = fi.Size()
 	this.mode = fi.Mode().String()
@@ -34,8 +34,6 @@ func (this *File) fileInfo() *File {
 func FileInstance(name string) *File {
 	fileObj := &File{name: name}
 	fileObj = fileObj.fileInfo()
-	if fileObj == nil {
-		return nil
-	}
 	return fileObj
 }
+

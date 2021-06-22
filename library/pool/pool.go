@@ -18,7 +18,7 @@ type Pool struct {
 	Total          int
 	result         chan map[string]*res.Result
 	taskResponse   []*res.Reponse
-	FinishCallback func()
+	FinishCallback map[string]func()
 }
 
 func (this *Pool) Init(runtineNumber, total int) {
@@ -29,10 +29,11 @@ func (this *Pool) Init(runtineNumber, total int) {
 }
 
 func (this *Pool) Start() {
-	if this.RuntineNumber <= 0 {
-		return
+	runtineNumber := this.RuntineNumber
+	if runtineNumber <= 0 {
+		runtineNumber = defaultRuntineNumber
 	}
-	for i := 0; i < this.RuntineNumber; i++ {
+	for i := 0; i < runtineNumber; i++ {
 		this.mutex.Add(1)
 		go func(num int) {
 			defer this.mutex.Done()
@@ -62,8 +63,11 @@ func (this *Pool) Start() {
 			this.taskResponse = append(this.taskResponse, response)
 		}
 	}
+	//执行回调
 	if this.FinishCallback != nil {
-		this.FinishCallback()
+		for _, function := range this.FinishCallback {
+			function()
+		}
 	}
 }
 
@@ -80,6 +84,6 @@ func (this *Pool) AddTask(task *res.Request) {
 	this.Queue <- task
 }
 
-func (this *Pool) SetFinishCallback(callback func()) {
-	this.FinishCallback = callback
+func (this *Pool) SetFinishCallback(name string, callback func()) {
+	this.FinishCallback[name] = callback
 }
