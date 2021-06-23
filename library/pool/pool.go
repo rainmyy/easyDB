@@ -59,13 +59,15 @@ func (this *Pool) Start() {
 		response := res.ReponseIntance()
 		for key, value := range result {
 			response.Name = key
-			response.Value = value
+			response.Result = value
 			this.taskResponse = append(this.taskResponse, response)
 		}
 	}
 	//执行回调
-	if this.FinishCallback != nil {
-		for _, function := range this.FinishCallback {
+	callbackLen := len(this.FinishCallback)
+	if callbackLen > 0 {
+
+		for key, function := range this.FinishCallback {
 			function()
 		}
 	}

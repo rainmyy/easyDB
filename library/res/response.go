@@ -1,8 +1,9 @@
 package res
 
 type Reponse struct {
-	Name  string
-	Value interface{}
+	Name     string
+	Result   *Result
+	callback Result
 }
 
 func ReponseIntance() *Reponse {

@@ -36,9 +36,10 @@ func (app *AppServer) Setup() {
 		request.RequestType = 0
 		request.Name = strconv.Itoa(i)
 		request.Func = func() *res.Result {
-			return download(url)
+			//return download(url)
 		}
 		pool.AddTask(request)
+
 	}
 }
 
