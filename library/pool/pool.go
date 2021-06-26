@@ -3,6 +3,7 @@ package pool
 import (
 	"sync"
 
+	"github.com/easydb/library/common"
 	res "github.com/easydb/library/res"
 )
 
@@ -12,80 +13,157 @@ const (
 )
 
 type Pool struct {
-	mutex          sync.WaitGroup
-	Queue          chan *res.Request
-	RuntineNumber  int
-	Total          int
-	result         chan map[string]*res.Result
-	taskResponse   []*res.Reponse
-	FinishCallback map[string]func()
+	//mutex         sync.WaitGroup
+	RuntineNumber int
+	Total         int
+	taskQuery     chan *Queue
+	taskResult    chan map[string]*res.Reponse
+	taskResponse  map[string]*res.Reponse
 }
 
-func (this *Pool) Init(runtineNumber, total int) {
+/**
+执行队列
+*/
+type Queue struct {
+	Name     string
+	result   chan *res.Reponse
+	Excel    *ExcelFunc
+	CallBack *CallBackFunc
+}
+type ExcelFunc struct {
+	Name     string
+	Function interface{}
+	Params   []interface{}
+}
+type CallBackFunc struct {
+	name     string
+	Function interface{}
+	Params   []interface{}
+}
+
+func GetInstance() *Pool {
+	return new(Pool)
+}
+func QueryInit(name string, function interface{}, params ...interface{}) *Queue {
+	excelFunc := &ExcelFunc{Function: function, Params: params}
+	query := &Queue{Name: name,
+		Excel:  excelFunc,
+		result: make(chan *res.Reponse, 1),
+	}
+	return query
+}
+
+func (q *Queue) CallBackInit(name string, function interface{}, params ...interface{}) *Queue {
+	callBackFunc := &CallBackFunc{name: name, Function: function, Params: params}
+	q.CallBack = callBackFunc
+	return q
+}
+func (this *Pool) Init(runtineNumber, total int) *Pool {
 	this.RuntineNumber = runtineNumber
 	this.Total = total
-	this.Queue = make(chan *res.Request, runtineNumber)
-	this.result = make(chan map[string]*res.Result, runtineNumber)
+	this.taskQuery = make(chan *Queue, runtineNumber)
+	this.taskResult = make(chan map[string]*res.Reponse, runtineNumber)
+	this.taskResponse = make(map[string]*res.Reponse)
+	return this
 }
-
 func (this *Pool) Start() {
 	runtineNumber := this.RuntineNumber
-	if runtineNumber <= 0 {
-		runtineNumber = defaultRuntineNumber
+	if len(this.taskQuery) != runtineNumber {
+		runtineNumber = len(this.taskQuery)
 	}
+	var mutex sync.WaitGroup
 	for i := 0; i < runtineNumber; i++ {
-		this.mutex.Add(1)
+		mutex.Add(1)
 		go func(num int) {
-			defer this.mutex.Done()
-			task, ok := <-this.Queue
+			defer mutex.Done()
+			task, ok := <-this.taskQuery
 			if !ok {
 				return
 			}
 			taskName := task.Name
-			taskResult := task.Func()
-			result := map[string]*res.Result{
+			task.excelQuery()
+			taskResult, ok := <-task.result
+
+			if !ok {
+				return
+			}
+			result := map[string]*res.Reponse{
 				taskName: taskResult,
 			}
-			this.result <- result
+			this.taskResult <- result
 		}(i)
 	}
-	this.mutex.Wait()
-	this.taskResponse = []*res.Reponse{}
-	for j := 0; j < this.RuntineNumber; j++ {
-		result, ok := <-this.result
-		if !ok {
-			break
-		}
-		response := res.ReponseIntance()
-		for key, value := range result {
-			response.Name = key
-			response.Result = value
-			this.taskResponse = append(this.taskResponse, response)
-		}
-	}
-	//执行回调
-	callbackLen := len(this.FinishCallback)
-	if callbackLen > 0 {
-
-		for key, function := range this.FinishCallback {
-			function()
+	mutex.Wait()
+	for i := 0; i < runtineNumber; i++ {
+		if result, ok := <-this.taskResult; ok {
+			for name, value := range result {
+				this.taskResponse[name] = value
+			}
 		}
 	}
 }
 
-func (this *Pool) TaskResult() []*res.Reponse {
+/**
+* 执行队列
+ */
+func (qeury *Queue) excelQuery() {
+	defer close(qeury.result)
+	excelFunc := qeury.Excel.Function
+	if excelFunc == nil {
+		return
+	}
+	var requestChannel = make(chan []interface{})
+	go func() {
+		defer close(requestChannel)
+		params := qeury.Excel.Params
+		result := common.FuncCall(excelFunc, params...)
+		if result == nil {
+			return
+		}
+		requestChannel <- result
+	}()
+	result, ok := <-requestChannel
+	if !ok {
+		return
+	}
+	response := common.FormatResult(result)
+	if response == nil {
+		return
+	}
+
+	var callBackResult = make(chan []interface{})
+	go func() {
+		defer close(callBackResult)
+		if qeury.CallBack == nil {
+
+			return
+		}
+		result := common.FuncCall(qeury.CallBack.Function, qeury.CallBack.Params...)
+		if result == nil {
+			return
+		}
+		callBackResult <- result
+	}()
+	resultList, ok := <-callBackResult
+	if !ok && response != nil {
+		qeury.result <- response
+		return
+	}
+	callBackResponse := common.FormatResult(resultList).Result
+	if callBackResponse != nil {
+		response.Callback = callBackResponse
+	}
+	qeury.result <- response
+}
+
+func (this *Pool) TaskResult() map[string]*res.Reponse {
 	return this.taskResponse
 }
 
 func (this *Pool) Stop() {
-	close(this.Queue)
-	close(this.result)
+	close(this.taskQuery)
 }
 
-func (this *Pool) AddTask(task *res.Request) {
-	this.Queue <- task
-}
-
-func (this *Pool) SetFinishCallback(name string, callback func()) {
-	this.FinishCallback[name] = callback
+func (this *Pool) AddTask(task *Queue) {
+	this.taskQuery <- task
 }

@@ -3,7 +3,8 @@ package res
 type Reponse struct {
 	Name     string
 	Result   *Result
-	callback Result
+	Callback *Result
+	res      Result
 }
 
 func ReponseIntance() *Reponse {
