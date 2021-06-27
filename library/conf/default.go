@@ -3,17 +3,25 @@ package conf
 import (
 	"sync"
 
-	"github.com/Unknwon/goconfig"
+	"github.com/easydb/library/file"
 )
 
 /**
 * 获取配置信息，默认获取获取default日志
  */
 
-type DeafultConf struct {
+type deafultConf struct {
 	m *sync.RWMutex
 }
 
-func (conf *DeafultConf) Init() {
-	cfg, err := goconfig.LoadConfigFile("conf.ini")
+func (conf *deafultConf) Init() *deafultConf {
+	confName := "global.conf"
+	filepath := "./conf/idc/bj/"
+
+	file.FileInstance(confName, filepath)
+	return conf
+}
+
+func ConfIntance() *deafultConf {
+	return new(deafultConf)
 }

@@ -13,13 +13,12 @@ import (
 var defaultSize = 1 << 30
 
 func (this *File) readFile() {
-	fileName := this.name
+	fileName := this.fileAbs
 	fi, err := os.Open(fileName)
+	defer fi.Close()
 	if err != nil {
 		return
 	}
-	defer fi.Close()
-
 	fileSize := this.size
 	if fileSize == 0 {
 		fiStat, err := fi.Stat()
@@ -42,13 +41,12 @@ func (this *File) readFileByGeneral(fileObj *os.File) {
 		return
 	}
 	r := bufio.NewReader(fileObj)
-	b := make([]byte, 3)
+	b := make([]byte, this.size)
 	for {
 		_, err := r.Read(b)
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
+		if err != nil && err == io.EOF {
+			panic(err)
+			break
 		}
 	}
 	if len(b) > 0 {

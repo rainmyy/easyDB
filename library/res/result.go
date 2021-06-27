@@ -1,15 +1,30 @@
 package res
 
+import "fmt"
+
 type Result struct {
 	Code  int
-	Error string
+	Error error
 	Data  string
 }
 
-func (this *Result) SetResult(code int, msg, data string) *Result {
+func (this *Result) SystemError() *Result {
+	return this.SetResult(-1, fmt.Errorf("system error"), "")
+}
+
+func (this *Result) ErrorParamsResult() *Result {
+	return this.SetResult(-2, fmt.Errorf("error params data"), "")
+}
+
+func (this *Result) EmptyResult() *Result {
+	return this.SetResult(-1, fmt.Errorf("empty data"), "")
+}
+func (this *Result) SetResult(code int, msg error, data string) *Result {
 	this.Code = code
 	this.Error = msg
-	this.Data = data
+	if data != "" {
+		this.Data = data
+	}
 	return this
 }
 

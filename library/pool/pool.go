@@ -77,17 +77,28 @@ func (this *Pool) Start() {
 		go func(num int) {
 			defer mutex.Done()
 			task, ok := <-this.taskQuery
+			taskName := task.Name
+			result := map[string]*res.Reponse{
+				taskName: nil,
+			}
+			response := res.ReponseIntance()
 			if !ok {
+				res := res.ResultInstance().ErrorParamsResult()
+				response.Result = res
+				result[taskName] = response
+				this.taskResult <- result
 				return
 			}
-			taskName := task.Name
 			task.excelQuery()
 			taskResult, ok := <-task.result
-
 			if !ok {
+				res := res.ResultInstance().EmptyResult()
+				response.Result = res
+				result[taskName] = response
+				this.taskResult <- result
 				return
 			}
-			result := map[string]*res.Reponse{
+			result = map[string]*res.Reponse{
 				taskName: taskResult,
 			}
 			this.taskResult <- result
@@ -130,21 +141,19 @@ func (qeury *Queue) excelQuery() {
 	if response == nil {
 		return
 	}
-
-	var callBackResult = make(chan []interface{})
+	var callBackChannel = make(chan []interface{})
 	go func() {
-		defer close(callBackResult)
+		defer close(callBackChannel)
 		if qeury.CallBack == nil {
-
 			return
 		}
 		result := common.FuncCall(qeury.CallBack.Function, qeury.CallBack.Params...)
 		if result == nil {
 			return
 		}
-		callBackResult <- result
+		callBackChannel <- result
 	}()
-	resultList, ok := <-callBackResult
+	resultList, ok := <-callBackChannel
 	if !ok && response != nil {
 		qeury.result <- response
 		return
@@ -161,7 +170,7 @@ func (this *Pool) TaskResult() map[string]*res.Reponse {
 }
 
 func (this *Pool) Stop() {
-	close(this.taskQuery)
+	close(this.taskResult)
 }
 
 func (this *Pool) AddTask(task *Queue) {
