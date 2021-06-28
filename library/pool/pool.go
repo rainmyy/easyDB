@@ -114,6 +114,18 @@ func (this *Pool) Start() {
 	}
 }
 
+func (this *Pool) TaskResult() map[string]*res.Reponse {
+	return this.taskResponse
+}
+
+func (this *Pool) Stop() {
+	close(this.taskResult)
+}
+
+func (this *Pool) AddTask(task *Queue) {
+	this.taskQuery <- task
+}
+
 /**
 * 执行队列
  */
@@ -163,16 +175,4 @@ func (qeury *Queue) excelQuery() {
 		response.Callback = callBackResponse
 	}
 	qeury.result <- response
-}
-
-func (this *Pool) TaskResult() map[string]*res.Reponse {
-	return this.taskResponse
-}
-
-func (this *Pool) Stop() {
-	close(this.taskResult)
-}
-
-func (this *Pool) AddTask(task *Queue) {
-	this.taskQuery <- task
 }

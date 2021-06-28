@@ -45,7 +45,7 @@ func (this *File) readFileByGeneral(fileObj *os.File) {
 	for {
 		_, err := r.Read(b)
 		if err != nil && err == io.EOF {
-			panic(err)
+			//panic(err)
 			break
 		}
 	}

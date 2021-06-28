@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../exercise"
+		}
+	],
+	"settings": {
+		"go.useLanguageServer": true
+	}
+}

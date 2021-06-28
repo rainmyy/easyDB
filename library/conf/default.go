@@ -18,7 +18,9 @@ func (conf *deafultConf) Init() *deafultConf {
 	confName := "global.conf"
 	filepath := "./conf/idc/bj/"
 
-	file.FileInstance(confName, filepath)
+	fileObj := file.FileInstance(confName, filepath)
+	result := []string{}
+	fileObj.Parser(result)
 	return conf
 }
 

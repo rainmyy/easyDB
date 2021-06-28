@@ -1,7 +1,6 @@
 package file
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -47,10 +46,13 @@ func FileInstance(name string, filepath string) *File {
 }
 
 func (this *File) getFilePath() {
-	fpStr := fmt.Sprintf("%s/%s", this.filepath, this.name)
-	fileAbs, err := filepath.Abs(fpStr)
+	fileAbs, err := filepath.Abs(filepath.Join(this.filepath, this.name))
 	if err != nil {
 		return
 	}
 	this.fileAbs = fileAbs
+}
+
+func (this *File) GetContent() []byte {
+	return this.content
 }
