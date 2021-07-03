@@ -1,8 +1,6 @@
 package file
 
 import (
-	"fmt"
-
 	"github.com/rainmyy/easyDB/library/bind"
 	"github.com/rainmyy/easyDB/library/strategy"
 )
@@ -23,12 +21,12 @@ func (this *File) Parser(obj interface{}) interface{} {
 * 绑定实体和参数
  */
 func bindObj(tree *strategy.TreeStruct, obj interface{}) interface{} {
-	fmt.Print(obj)
 	switch obj := obj.(type) {
 	case string:
 		bind.BindString(tree, obj)
-	case map[interface{}]interface{}:
+	case map[string]interface{}:
 		bind.BindMap(tree, obj)
+
 	}
 	return obj
 }

@@ -14,6 +14,13 @@ type NodeStruct struct {
 	length int
 }
 
+func (this *TreeStruct) GetNode() []*NodeStruct {
+	if this.node == nil {
+		return nil
+	}
+	return this.node
+}
+
 func (this *TreeStruct) SetNode(node *NodeStruct) *TreeStruct {
 	if node == nil {
 		return this
@@ -23,6 +30,12 @@ func (this *TreeStruct) SetNode(node *NodeStruct) *TreeStruct {
 		this.leaf = true
 	}
 	return this
+}
+func (this *TreeStruct) GetChildren() []*TreeStruct {
+	if this.children == nil {
+		return nil
+	}
+	return this.children
 }
 
 func (this *TreeStruct) SetChildren(children *TreeStruct) *TreeStruct {

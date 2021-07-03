@@ -45,13 +45,10 @@ func (this *File) readFileByGeneral(fileObj *os.File) {
 	for {
 		_, err := r.Read(b)
 		if err != nil && err == io.EOF {
-			//panic(err)
 			break
 		}
 	}
-	if len(b) > 0 {
-		this.content = b
-	}
+	this.content = b
 }
 
 func (this *File) readFileByConcurrent(fileObj *os.File) {

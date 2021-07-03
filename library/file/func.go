@@ -24,6 +24,8 @@ func initTreeFunc(bytesList [][]byte) *strategy.TreeStruct {
 	var segment = []int{91, 46}
 	infunc := InIntSliceSortedFunc(segment)
 	var rootTree = currentTree
+	//根节点设置为1
+	currentTree.SetHight(1)
 	for i := 0; i < len(bytesList); i++ {
 		bytes := bytesList[i]
 		bytesLen := len(bytes)
@@ -42,7 +44,6 @@ func initTreeFunc(bytesList [][]byte) *strategy.TreeStruct {
 		if tempNum > 0 && len(bytes) > tempNum {
 			bytes = bytes[tempNum : bytesLen-1]
 			nodeStruct = strategy.NodeInstance(bytes, []byte{})
-
 			if tempNum < currentHigh {
 				for tempNum <= currentHigh {
 					currentTree = currentTree.GetParent()

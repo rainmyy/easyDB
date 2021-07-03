@@ -1,7 +1,6 @@
 package conf
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/rainmyy/easyDB/library/file"
@@ -21,7 +20,6 @@ func (conf *deafultConf) Init() *deafultConf {
 
 	fileObj := file.FileInstance(confName, filepath)
 	result := make(map[string]interface{})
-	fmt.Print(result.(type))
 	fileObj.Parser(result)
 	return conf
 }
