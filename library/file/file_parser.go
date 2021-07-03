@@ -7,7 +7,7 @@ import (
 /**
 * 解析
  */
-func (this *File) Parser(obj interface{}) {
+func (this *File) Parser(obj *interface{}) {
 	tree := ParserIniContent(this.content)
 	bind(tree, obj)
 }
@@ -15,7 +15,8 @@ func (this *File) Parser(obj interface{}) {
 /**
 * 绑定实体和参数
  */
-func bind(tree *strategy.TreeStruct, obj interface{}) {
+func bind(tree *strategy.TreeStruct, obj *interface{}) {
+
 }
 
 /**
