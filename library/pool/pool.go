@@ -3,7 +3,6 @@ package pool
 import (
 	"sync"
 
-	"github.com/easydb/library/common"
 	res "github.com/easydb/library/res"
 )
 
@@ -139,7 +138,7 @@ func (qeury *Queue) excelQuery() {
 	go func() {
 		defer close(requestChannel)
 		params := qeury.Excel.Params
-		result := common.FuncCall(excelFunc, params...)
+		result := FuncCall(excelFunc, params...)
 		if result == nil {
 			return
 		}
@@ -149,7 +148,7 @@ func (qeury *Queue) excelQuery() {
 	if !ok {
 		return
 	}
-	response := common.FormatResult(result)
+	response := FormatResult(result)
 	if response == nil {
 		return
 	}
@@ -159,7 +158,7 @@ func (qeury *Queue) excelQuery() {
 		if qeury.CallBack == nil {
 			return
 		}
-		result := common.FuncCall(qeury.CallBack.Function, qeury.CallBack.Params...)
+		result := FuncCall(qeury.CallBack.Function, qeury.CallBack.Params...)
 		if result == nil {
 			return
 		}
@@ -170,7 +169,7 @@ func (qeury *Queue) excelQuery() {
 		qeury.result <- response
 		return
 	}
-	callBackResponse := common.FormatResult(resultList).Result
+	callBackResponse := FormatResult(resultList).Result
 	if callBackResponse != nil {
 		response.Callback = callBackResponse
 	}

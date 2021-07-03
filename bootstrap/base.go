@@ -53,7 +53,7 @@ func (app *AppServer) Start() {
 }
 
 func download(url int, str string) {
-	fmt.Print(str)
+	fmt.Print(str, "\n")
 	//result := res.ResultInstance().SetResult(200, fmt.Errorf(""), "result")
 	//return result
 }
