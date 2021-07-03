@@ -9,7 +9,7 @@ import (
  */
 func (this *File) Parser(obj interface{}) {
 	tree := ParserIniContent(this.content)
-
+	bind(tree, obj)
 }
 
 /**
