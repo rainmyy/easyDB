@@ -1,7 +1,7 @@
 package file
 
 import (
-	"github.com/easydb/library/strategy"
+	"github.com/rainmyy/easydb/library/strategy"
 )
 
 /**

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/easydb/library/res"
+	"github.com/rainmyy/easydb/library/res"
 )
 
 func FuncCall(function interface{}, args ...interface{}) []interface{} {
