@@ -3,8 +3,8 @@ package file
 import (
 	"sort"
 
-	"github.com/rainmyy/easydb/library/common"
-	"github.com/rainmyy/easydb/library/strategy"
+	"github.com/rainmyy/easyDB/library/common"
+	"github.com/rainmyy/easyDB/library/strategy"
 )
 
 func InIntSliceSortedFunc(stack []int) func(int) bool {

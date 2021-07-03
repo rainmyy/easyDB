@@ -3,7 +3,7 @@ package conf
 import (
 	"sync"
 
-	"github.com/easydb/library/file"
+	"github.com/rainmyy/easyDB/library/file"
 )
 
 /**
