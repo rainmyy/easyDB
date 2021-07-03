@@ -1,21 +1,36 @@
 package file
 
 import (
-	"github.com/easydb/library/strategy"
+	"fmt"
+
+	"github.com/rainmyy/easyDB/library/bind"
+	"github.com/rainmyy/easyDB/library/strategy"
 )
 
 /**
 * 解析
  */
-func (this *File) Parser(obj interface{}) {
+func (this *File) Parser(obj interface{}) interface{} {
 	tree := ParserIniContent(this.content)
-	bind(tree, obj)
+	if tree == nil {
+		return nil
+	}
+	result := bindObj(tree, obj)
+	return result
 }
 
 /**
 * 绑定实体和参数
  */
-func bind(tree *strategy.TreeStruct, obj interface{}) {
+func bindObj(tree *strategy.TreeStruct, obj interface{}) interface{} {
+	fmt.Print(obj)
+	switch obj := obj.(type) {
+	case string:
+		bind.BindString(tree, obj)
+	case map[interface{}]interface{}:
+		bind.BindMap(tree, obj)
+	}
+	return obj
 }
 
 /**

@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/easydb/library/conf"
-	PoolLib "github.com/easydb/library/pool"
+	"github.com/rainmyy/easyDB/library/conf"
+	PoolLib "github.com/rainmyy/easyDB/library/pool"
 )
 
 /**

@@ -1,3 +1,3 @@
-module github.com/easydb
+module github.com/rainmyy/easyDB
 
 go 1.16

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/easydb/bootstrap"
+	"github.com/rainmyy/easyDB/bootstrap"
 )
 
 /***

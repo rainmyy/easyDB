@@ -3,7 +3,7 @@ package pool
 import (
 	"sync"
 
-	res "github.com/easydb/library/res"
+	res "github.com/rainmyy/easyDB/library/res"
 )
 
 const (
