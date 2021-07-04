@@ -1,7 +1,8 @@
 package file
 
 import (
-	"github.com/rainmyy/easyDB/library/bind"
+	"reflect"
+
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
@@ -20,15 +21,41 @@ func (this *File) Parser(obj interface{}) interface{} {
 /**
 * 绑定实体和参数
  */
-func bindObj(tree *strategy.TreeStruct, obj interface{}) interface{} {
-	switch obj := obj.(type) {
-	case string:
-		bind.BindString(tree, obj)
-	case map[string]interface{}:
-		bind.BindMap(tree, obj)
-
+func bindObj(tree *strategy.TreeStruct, obj interface{}) func(args ...interface{}) interface{} {
+	value := reflect.ValueOf(obj)
+	var list interface{}
+	var objFunc func(args []*strategy.NodeStruct, list interface{}) interface{}
+	var recurNode func(tree *strategy.TreeStruct, list interface{})
+	switch value.Kind() {
+	case reflect.String:
+		list = ""
+		objFunc = func(args []*strategy.NodeStruct, list interface{}) interface{} {
+			for _, val := range args {
+				if len(val.GetName()) == 0 {
+					continue
+				}
+			}
+			return ""
+		}
+	case reflect.Map:
+		list = make(map[string]interface{})
+	case reflect.Struct:
+		list = obj
 	}
-	return obj
+	recurNode = func(tree *strategy.TreeStruct, list interface{}) {
+		if tree == nil {
+			return
+		}
+		if tree.GetNode() != nil {
+			dataList := tree.GetNode()
+			list = objFunc(dataList, list)
+		}
+		for _, val := range tree.GetChildren() {
+			recurNode(val, list)
+		}
+	}
+	recurNode(tree, list)
+	return nil
 }
 
 /**

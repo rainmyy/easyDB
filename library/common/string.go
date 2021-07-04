@@ -14,7 +14,6 @@ func Str2bytes(s string) []byte {
 func Bytes2str(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
-
 func String2bytes(s string) []byte {
 	stringHeader := (*reflect.StringHeader)(unsafe.Pointer(&s))
 

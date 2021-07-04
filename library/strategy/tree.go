@@ -9,7 +9,7 @@ type TreeStruct struct {
 }
 
 type NodeStruct struct {
-	data   interface{}
+	data   []byte
 	name   []byte
 	length int
 }
@@ -26,7 +26,7 @@ func (this *TreeStruct) SetNode(node *NodeStruct) *TreeStruct {
 		return this
 	}
 	this.node = append(this.node, node)
-	if node.data != nil {
+	if len(node.data) > 0 {
 		this.leaf = true
 	}
 	return this
@@ -85,6 +85,9 @@ func (this *TreeStruct) SetHight(hight int) *TreeStruct {
 	return this
 }
 
+func (this *TreeStruct) IsLeaf() bool {
+	return this.leaf
+}
 func (this *TreeStruct) IsRoot() bool {
 	if this.parent != nil {
 		return false
@@ -100,18 +103,14 @@ func TreeInstance() *TreeStruct {
 	}
 }
 
-func (this *NodeStruct) GetData() interface{} {
+func (this *NodeStruct) GetData() []byte {
 	return this.data
 }
-
-func NodeInstance(key []byte, value interface{}) *NodeStruct {
+func (this *NodeStruct) GetName() []byte {
+	return this.name
+}
+func NodeInstance(key []byte, value []byte) *NodeStruct {
 	lenth := 0
-	switch value := value.(type) {
-	case string:
-	case []byte:
-	case map[interface{}]interface{}:
-	case []interface{}:
-		lenth = len(value)
-	}
+
 	return &NodeStruct{name: key, data: value, length: lenth}
 }

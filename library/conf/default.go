@@ -19,7 +19,7 @@ func (conf *deafultConf) Init() *deafultConf {
 	filepath := "./conf/idc/bj/"
 
 	fileObj := file.FileInstance(confName, filepath)
-	result := make(map[string]interface{})
+	result := ""
 	fileObj.Parser(result)
 	return conf
 }
