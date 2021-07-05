@@ -1,8 +1,10 @@
 package file
 
 import (
+	"fmt"
 	"reflect"
 
+	"github.com/rainmyy/easyDB/library/common"
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
@@ -28,14 +30,29 @@ func bindObj(tree *strategy.TreeStruct, obj interface{}) func(args ...interface{
 	var recurNode func(tree *strategy.TreeStruct, list interface{})
 	switch value.Kind() {
 	case reflect.String:
-		list = ""
+		list = "{%s}"
 		objFunc = func(args []*strategy.NodeStruct, list interface{}) interface{} {
 			for _, val := range args {
-				if len(val.GetName()) == 0 {
+				nodeName := common.Bytes2str(val.GetName())
+				nodeData := common.Bytes2str(val.GetData())
+				if len(nodeName) == 0 {
 					continue
 				}
+				temp := "{%s}"
+				if len(nodeData) > 0 {
+					if len(args) > 1 {
+						temp = fmt.Sprintf("[{%s:%s}]", nodeName, nodeData)
+						list = fmt.Sprintf("["+list.(string)+",%s]", temp)
+					} else {
+						list = fmt.Sprintf("["+list.(string)+"]", temp)
+					}
+				} else {
+					temp = fmt.Sprintf(list.(string), nodeName, "")
+				}
 			}
-			return ""
+			fmt.Print(list)
+			//fmt.Print(list)
+			return list
 		}
 	case reflect.Map:
 		list = make(map[string]interface{})

@@ -1,17 +1,52 @@
 package strategy
 
+import (
+	"sync"
+)
+
+const treVal = 0.75
+
 type Stack struct {
-	maxNum int
-	top    int
-	arr    [20]int
+	top    *node
+	length int
+	lock   *sync.RWMutex
 }
 
-func (this *Stack) Push() {
-	if this.isFull() {
+type node struct {
+	value interface{}
+	prev  *node
+}
 
+func StackInstance() *Stack {
+	return &Stack{nil, 0, &sync.RWMutex{}}
+}
+func (this *Stack) Len() int {
+	return this.length
+}
+func (this *Stack) Peek() interface{} {
+	if this.length == 0 {
+		return nil
 	}
+
+	return this.top.value
 }
 
-func (this *Stack) isFull() bool {
-	return this.top+1 >= this.maxNum
+func (this *Stack) Pop() interface{} {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	if this.length == 0 {
+		return nil
+	}
+	n := this.top
+	this.top = n.prev
+	this.length--
+	return n.value
+}
+
+func (this *Stack) Push(value interface{}) {
+	this.lock.Lock()
+	this.lock.Unlock()
+	n := &node{value, this.top}
+	this.top = n
+	this.length++
 }
