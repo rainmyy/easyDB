@@ -1,11 +1,8 @@
 package strategy
 
-import (
-	"sync"
-)
-
 const treVal = 0.75
 
+/**
 type Stack struct {
 	top    *node
 	length int
@@ -50,3 +47,4 @@ func (this *Stack) Push(value interface{}) {
 	this.top = n
 	this.length++
 }
+*/
