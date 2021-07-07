@@ -1,77 +1,39 @@
 package file
 
 import (
-	"fmt"
-	"reflect"
-
-	"github.com/rainmyy/easyDB/library/common"
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
 /**
-* 解析
+* 解析数据，将数据解析成树形结构进行存储
  */
-func (this *File) Parser(obj interface{}) interface{} {
-	tree := ParserIniContent(this.content)
+func (this *File) Parser(objType string) *strategy.TreeStruct {
+	var tree *strategy.TreeStruct
+	switch objType {
+	case "ini":
+		tree = this.ParserIniContent()
+	case "yaml":
+		tree = this.ParserYamlContent()
+	case "json":
+		tree = this.ParserjSONContent()
+	default:
+		tree = this.ParserContent()
+	}
+
 	if tree == nil {
 		return nil
 	}
-	result := bindObj(tree, obj)
-	return result
+	return tree
 }
 
-/**
-* 绑定实体和参数
- */
-func bindObj(tree *strategy.TreeStruct, obj interface{}) func(args ...interface{}) interface{} {
-	value := reflect.ValueOf(obj)
-	var list interface{}
-	var objFunc func(args []*strategy.NodeStruct, list interface{}) interface{}
-	var recurNode func(tree *strategy.TreeStruct, list interface{})
-	switch value.Kind() {
-	case reflect.String:
-		list = "{%s}"
-		objFunc = func(args []*strategy.NodeStruct, list interface{}) interface{} {
-			for _, val := range args {
-				nodeName := common.Bytes2str(val.GetName())
-				nodeData := common.Bytes2str(val.GetData())
-				if len(nodeName) == 0 {
-					continue
-				}
-				temp := "{%s}"
-				if len(nodeData) > 0 {
-					if len(args) > 1 {
-						temp = fmt.Sprintf("[{%s:%s}]", nodeName, nodeData)
-						list = fmt.Sprintf("["+list.(string)+",%s]", temp)
-					} else {
-						list = fmt.Sprintf("["+list.(string)+"]", temp)
-					}
-				} else {
-					temp = fmt.Sprintf(list.(string), nodeName, "")
-				}
-			}
-			fmt.Print(list)
-			//fmt.Print(list)
-			return list
-		}
-	case reflect.Map:
-		list = make(map[string]interface{})
-	case reflect.Struct:
-		list = obj
-	}
-	recurNode = func(tree *strategy.TreeStruct, list interface{}) {
-		if tree == nil {
-			return
-		}
-		if tree.GetNode() != nil {
-			dataList := tree.GetNode()
-			list = objFunc(dataList, list)
-		}
-		for _, val := range tree.GetChildren() {
-			recurNode(val, list)
-		}
-	}
-	recurNode(tree, list)
+func (this *File) ParserContent() *strategy.TreeStruct {
+	return nil
+}
+
+func (this *File) ParserjSONContent() *strategy.TreeStruct {
+	return nil
+}
+func (this *File) ParserYamlContent() *strategy.TreeStruct {
 	return nil
 }
 
@@ -86,18 +48,18 @@ func bindObj(tree *strategy.TreeStruct, obj interface{}) func(args ...interface{
 *        name:name2
 *        key:value
  */
-func ParserIniContent(content []byte) *strategy.TreeStruct {
-	if content == nil {
+func (this *File) ParserIniContent() *strategy.TreeStruct {
+	if this.content == nil {
 		return nil
 	}
 	bytesList := [][]byte{}
 	hasSlash := false
 	bytes := []byte{}
-	if content[len(content)-1] != 10 {
-		content = append(content, 10)
+	if this.content[len(this.content)-1] != 10 {
+		this.content = append(this.content, 10)
 	}
-	for i := 0; i < len(content); i++ {
-		value := content[i]
+	for i := 0; i < len(this.content); i++ {
+		value := this.content[i]
 		//出现斜杠过滤
 		if value == 47 {
 			hasSlash = true
@@ -121,14 +83,6 @@ func ParserIniContent(content []byte) *strategy.TreeStruct {
 		return nil
 	}
 	//数据以树型结构存储
-	//byteTreeList := []*strategy.TreeStruct{}
 	byteTreeList := initTreeFunc(bytesList)
 	return byteTreeList
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
