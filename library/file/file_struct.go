@@ -1,6 +1,7 @@
 package file
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -55,4 +56,28 @@ func (this *File) getFilePath() {
 
 func (this *File) GetContent() []byte {
 	return this.content
+}
+
+func (this *File) createDir(fileName string) bool {
+	if this.checkFileExist(fileName) {
+		return true
+	}
+	paths, _ := filepath.Split(fileName)
+	if this.checkFileExist(paths) {
+		return true
+	}
+	err := os.MkdirAll(paths, os.ModePerm)
+	if err != nil {
+		fmt.Println("create file: " + fileName + " fail, msg:" + fmt.Sprintf("%s", err))
+		return false
+	}
+	return true
+}
+
+func (this *File) checkFileExist(filename string) bool {
+	var exist = true
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		exist = false
+	}
+	return exist
 }
