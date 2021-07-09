@@ -3,6 +3,8 @@ package conf
 import (
 	"sync"
 
+	"github.com/rainmyy/easyDB/library/bind"
+	"github.com/rainmyy/easyDB/library/common"
 	"github.com/rainmyy/easyDB/library/file"
 )
 
@@ -19,8 +21,13 @@ func (conf *deafultConf) Init() *deafultConf {
 	filepath := "./conf/idc/bj/"
 
 	fileObj := file.FileInstance(confName, filepath)
-	result := ""
-	fileObj.Parser(result)
+	dataTree, err := fileObj.Parser(common.IniType)
+	if err != nil {
+		return nil
+	}
+
+	str, _ := bind.BindString(dataTree, "")
+	print(str)
 	return conf
 }
 

@@ -1,39 +1,44 @@
 package file
 
 import (
+	"fmt"
+
+	"github.com/rainmyy/easyDB/library/common"
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
 /**
 * 解析数据，将数据解析成树形结构进行存储
  */
-func (this *File) Parser(objType string) *strategy.TreeStruct {
-	var tree *strategy.TreeStruct
+func (this *File) Parser(objType int) ([]*strategy.TreeStruct, error) {
+	var tree []*strategy.TreeStruct
 	switch objType {
-	case "ini":
+	case common.IniType:
 		tree = this.ParserIniContent()
-	case "yaml":
+	case common.YamlType:
 		tree = this.ParserYamlContent()
-	case "json":
+	case common.JsonType:
 		tree = this.ParserjSONContent()
+	case common.DataType:
+		tree = this.ParserContent()
 	default:
 		tree = this.ParserContent()
 	}
 
 	if tree == nil {
-		return nil
+		return nil, fmt.Errorf("data is none")
 	}
-	return tree
+	return tree, nil
 }
 
-func (this *File) ParserContent() *strategy.TreeStruct {
+func (this *File) ParserContent() []*strategy.TreeStruct {
 	return nil
 }
 
-func (this *File) ParserjSONContent() *strategy.TreeStruct {
+func (this *File) ParserjSONContent() []*strategy.TreeStruct {
 	return nil
 }
-func (this *File) ParserYamlContent() *strategy.TreeStruct {
+func (this *File) ParserYamlContent() []*strategy.TreeStruct {
 	return nil
 }
 
@@ -48,7 +53,7 @@ func (this *File) ParserYamlContent() *strategy.TreeStruct {
 *        name:name2
 *        key:value
  */
-func (this *File) ParserIniContent() *strategy.TreeStruct {
+func (this *File) ParserIniContent() []*strategy.TreeStruct {
 	if this.content == nil {
 		return nil
 	}

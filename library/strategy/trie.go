@@ -1,3 +1,7 @@
+package strategy
+
+import "fmt"
+
 type trideNode struct {
 	char     string
 	isEnding bool

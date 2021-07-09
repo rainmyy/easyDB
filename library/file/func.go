@@ -26,7 +26,7 @@ func InIntSliceSortedFunc(stack []int) func(int) bool {
 *        name:name2
 *        key:value
  */
-func ParserIniContent(content []byte) *strategy.TreeStruct {
+func ParserIniContent(content []byte) []*strategy.TreeStruct {
 	if content == nil {
 		return nil
 	}
@@ -68,7 +68,7 @@ func ParserIniContent(content []byte) *strategy.TreeStruct {
 /**
 *实现树状结构
  */
-func initTreeFunc(bytesList [][]byte) *strategy.TreeStruct {
+func initTreeFunc(bytesList [][]byte) []*strategy.TreeStruct {
 	currentTree := strategy.TreeInstance()
 	//分隔符，91:'[' 46:'.' 58:':'
 	var segment = []int{91, 46}
@@ -94,11 +94,9 @@ func initTreeFunc(bytesList [][]byte) *strategy.TreeStruct {
 		if tempNum > 0 && len(bytes) > tempNum {
 			bytes = bytes[tempNum : bytesLen-1]
 			nodeStruct = strategy.NodeInstance(bytes, []byte{})
-			if tempNum < currentHigh {
-				for tempNum <= currentHigh {
-					currentTree = currentTree.GetParent()
-					currentHigh = currentTree.GetHight()
-				}
+			for tempNum < currentHigh {
+				currentTree = currentTree.GetParent()
+				currentHigh = currentTree.GetHight()
 			}
 			treeStruct.SetNode(nodeStruct)
 			treeStruct.SetParent(currentTree)
@@ -121,7 +119,7 @@ func initTreeFunc(bytesList [][]byte) *strategy.TreeStruct {
 			currentTree.SetChildren(treeStruct)
 		}
 	}
-	return rootTree
+	return rootTree.GetChildren()
 }
 
 func max(a, b int) int {
