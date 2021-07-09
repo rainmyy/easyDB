@@ -1,11 +1,12 @@
 package strategy
 
 type TreeStruct struct {
-	node     []*NodeStruct
-	children []*TreeStruct
-	parent   *TreeStruct
-	high     int //计算层高
-	leaf     bool
+	node         []*NodeStruct
+	children     []*TreeStruct
+	parent       *TreeStruct
+	high         int //计算层高
+	leaf         bool
+	childLeafNum int
 }
 
 type NodeStruct struct {
@@ -45,6 +46,11 @@ func (this *TreeStruct) SetChildren(children *TreeStruct) *TreeStruct {
 	children.SetParent(this)
 	children.SetHight(this.high + 1)
 	this.children = append(this.children, children)
+	for _, val := range this.children {
+		if val.IsLeaf() == true {
+			this.childLeafNum++
+		}
+	}
 	return this
 }
 

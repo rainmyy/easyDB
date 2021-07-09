@@ -13,5 +13,6 @@ const (
 	LeftRrance   rune = '{'
 	RightRrance  rune = '}'
 	Colon        rune = ':'
+	Comma        rune = ','
 	None         rune = 'N'
 )
