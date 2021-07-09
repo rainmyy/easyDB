@@ -30,7 +30,7 @@ func (conf *deafultConf) Init() *deafultConf {
 	buffer.WriteRune(common.LeftRrance)
 	bind.BindString(dataTree, buffer)
 	buffer.WriteRune(common.RightRrance)
-	print(buffer.String())
+
 	return conf
 }
 

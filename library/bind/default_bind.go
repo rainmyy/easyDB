@@ -1,7 +1,7 @@
 package bind
 
 import (
-	"fmt"
+	"bytes"
 	"reflect"
 
 	"github.com/rainmyy/easyDB/library/common"
@@ -14,54 +14,18 @@ import (
 /**
 * 绑定实体和参数
  */
-func bindObj(tree *strategy.TreeStruct, obj interface{}) func(args ...interface{}) interface{} {
+func bindObj(tree []*strategy.TreeStruct, obj interface{}) (*bytes.Buffer, error) {
 	value := reflect.ValueOf(obj)
-	var list interface{}
-	var objFunc func(args []*strategy.NodeStruct, list interface{}) interface{}
-	var recurNode func(tree *strategy.TreeStruct, list interface{})
+	var buffer *bytes.Buffer
 	switch value.Kind() {
 	case reflect.String:
-		list = "{%s}"
-		objFunc = func(args []*strategy.NodeStruct, list interface{}) interface{} {
-			for _, val := range args {
-				nodeName := common.Bytes2str(val.GetName())
-				nodeData := common.Bytes2str(val.GetData())
-				if len(nodeName) == 0 {
-					continue
-				}
-				temp := "{%s}"
-				if len(nodeData) > 0 {
-					if len(args) > 1 {
-						temp = fmt.Sprintf("[{%s:%s}]", nodeName, nodeData)
-						list = fmt.Sprintf("["+list.(string)+",%s]", temp)
-					} else {
-						list = fmt.Sprintf("["+list.(string)+"]", temp)
-					}
-				} else {
-					temp = fmt.Sprintf(list.(string), nodeName, "")
-				}
-			}
-			fmt.Print(list)
-			//fmt.Print(list)
-			return list
-		}
+		buffer = new(bytes.Buffer)
+		buffer.WriteRune(common.LeftRrance)
+		BindString(tree, buffer)
+		buffer.WriteRune(common.RightRrance)
 	case reflect.Map:
-		list = make(map[string]interface{})
 	case reflect.Struct:
-		list = obj
+
 	}
-	recurNode = func(tree *strategy.TreeStruct, list interface{}) {
-		if tree == nil {
-			return
-		}
-		if tree.GetNode() != nil {
-			dataList := tree.GetNode()
-			list = objFunc(dataList, list)
-		}
-		for _, val := range tree.GetChildren() {
-			recurNode(val, list)
-		}
-	}
-	recurNode(tree, list)
-	return nil
+	return buffer, nil
 }
