@@ -1,7 +1,6 @@
 package conf
 
 import (
-	"bytes"
 	"sync"
 
 	"github.com/rainmyy/easyDB/library/bind"
@@ -26,11 +25,7 @@ func (conf *deafultConf) Init() *deafultConf {
 	if err != nil {
 		return nil
 	}
-	var buffer = new(bytes.Buffer)
-	buffer.WriteRune(common.LeftRrance)
-	bind.BindString(dataTree, buffer)
-	buffer.WriteRune(common.RightRrance)
-
+	bind.DefaultBindMap(dataTree)
 	return conf
 }
 

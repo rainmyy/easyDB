@@ -7,6 +7,15 @@ import (
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
+func DefaultBindString(treeList []*strategy.TreeStruct) *bytes.Buffer {
+	var buffer = bytes.NewBuffer([]byte{})
+	buffer = new(bytes.Buffer)
+	buffer.WriteRune(common.LeftRrance)
+	BindString(treeList, buffer)
+	buffer.WriteRune(common.RightRrance)
+	return buffer
+}
+
 /**
 * 序列化tree:{key:name, key2:{name:1, name2:2}, key3:[{name:1, name2:3}, {name:3, name:4}]}
  */

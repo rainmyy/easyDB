@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"reflect"
 
-	"github.com/rainmyy/easyDB/library/common"
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
@@ -16,14 +15,12 @@ import (
  */
 func bindObj(tree []*strategy.TreeStruct, obj interface{}) (*bytes.Buffer, error) {
 	value := reflect.ValueOf(obj)
-	var buffer *bytes.Buffer
+	buffer := bytes.NewBuffer([]byte{})
 	switch value.Kind() {
 	case reflect.String:
-		buffer = new(bytes.Buffer)
-		buffer.WriteRune(common.LeftRrance)
-		BindString(tree, buffer)
-		buffer.WriteRune(common.RightRrance)
+		buffer = DefaultBindString(tree)
 	case reflect.Map:
+		_ = DefaultBindMap(tree)
 	case reflect.Struct:
 
 	}
