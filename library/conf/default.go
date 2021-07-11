@@ -9,21 +9,13 @@ import (
 )
 
 /**
-* 获取配置信息，默认获取获取default日志
+* 获取配置信息，默认获取获取default日志,配置文件bind级别分为must,should,must是必须参数，should是非必须参数，不配置则不判断bind
  */
-
 type DeafultConf struct {
-	m    *sync.RWMutex
-	Test []*DeafultConf `bind:"test"`
-}
-
-type Params struct {
-	Name string `bind:"name"`
-	Key  string `bind:"key"`
-}
-
-type Count struct {
-	Value string `bind:value`
+	m     *sync.RWMutex
+	Key   string         `bind:"must"`
+	Name  string         `bind:"should"`
+	Child []*DeafultConf `bind:"must"`
 }
 
 func (conf *DeafultConf) Init() *DeafultConf {
@@ -35,10 +27,10 @@ func (conf *DeafultConf) Init() *DeafultConf {
 	if err != nil {
 		return nil
 	}
-	bind.DefaultBindMap(dataTree)
+	bind.DefaultBindStruct(dataTree, conf)
 	return conf
 }
 
-func ConfIntance() *deafultConf {
-	return new(deafultConf)
+func ConfIntance() *DeafultConf {
+	return new(DeafultConf)
 }

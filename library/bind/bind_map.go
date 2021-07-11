@@ -5,7 +5,7 @@ import (
 )
 
 /**
-*
+* 获取数据树的map和slice
  */
 func DefaultBindMap(treeList []*strategy.TreeStruct) []map[string]interface{} {
 	var treeMapList = make([]map[string]interface{}, 0)
