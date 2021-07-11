@@ -13,16 +13,19 @@ import (
 /**
 * 绑定实体和参数
  */
-func bindObj(tree []*strategy.TreeStruct, obj interface{}) (*bytes.Buffer, error) {
+func bindObj(tree []*strategy.TreeStruct, obj interface{}) (interface{}, error) {
 	value := reflect.ValueOf(obj)
-	buffer := bytes.NewBuffer([]byte{})
+	var buffer interface{}
 	switch value.Kind() {
 	case reflect.String:
+		buffer = bytes.NewBuffer([]byte{})
 		buffer = DefaultBindString(tree)
 	case reflect.Map:
-		_ = DefaultBindMap(tree)
+		buffer = make([]map[string]interface{}, 0)
+		buffer = DefaultBindMap(tree)
 	case reflect.Struct:
-
+		buffer = obj
+		buffer = DefaultBindStruct(tree, obj)
 	}
 	return buffer, nil
 }

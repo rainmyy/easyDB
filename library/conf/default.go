@@ -12,11 +12,21 @@ import (
 * 获取配置信息，默认获取获取default日志
  */
 
-type deafultConf struct {
-	m *sync.RWMutex
+type DeafultConf struct {
+	m    *sync.RWMutex
+	Test []*DeafultConf `bind:"test"`
 }
 
-func (conf *deafultConf) Init() *deafultConf {
+type Params struct {
+	Name string `bind:"name"`
+	Key  string `bind:"key"`
+}
+
+type Count struct {
+	Value string `bind:value`
+}
+
+func (conf *DeafultConf) Init() *DeafultConf {
 	confName := "global.conf"
 	filepath := "./conf/idc/bj/"
 
