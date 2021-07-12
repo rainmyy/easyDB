@@ -10,6 +10,9 @@ import (
 func DefaultBindMap(treeList []*strategy.TreeStruct) []map[string]interface{} {
 	var treeMapList = make([]map[string]interface{}, 0)
 	var getBindMap func(tree []*strategy.TreeStruct) []map[string]interface{}
+	/***
+	* 递归方式获取
+	 */
 	getBindMap = func(tree []*strategy.TreeStruct) []map[string]interface{} {
 		if len(tree) == 0 {
 			return nil
