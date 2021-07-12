@@ -16,3 +16,7 @@ const (
 	Comma        rune = ','
 	None         rune = 'N'
 )
+
+const (
+	BindTag = "bind"
+)

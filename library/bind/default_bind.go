@@ -13,7 +13,7 @@ import (
 /**
 * 绑定实体和参数
  */
-func bindObj(tree []*strategy.TreeStruct, obj interface{}) (interface{}, error) {
+func DefaultBind(tree []*strategy.TreeStruct, obj interface{}) (interface{}, error) {
 	value := reflect.ValueOf(obj)
 	var buffer interface{}
 	switch value.Kind() {

@@ -27,7 +27,8 @@ func (conf *DeafultConf) Init() *DeafultConf {
 	if err != nil {
 		return nil
 	}
-	bind.DefaultBindStruct(dataTree, conf)
+	resType := make(map[string]interface{})
+	bind.DefaultBind(dataTree, resType)
 	return conf
 }
 
