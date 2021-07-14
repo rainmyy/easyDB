@@ -16,62 +16,12 @@ func InIntSliceSortedFunc(stack []int) func(int) bool {
 }
 
 /**
-*解析ini格式配置文件
-*desc:
-*[test]
-*    [..params]
-*        name:name1
-*        key:value
-*    [...params]
-*        name:name2
-*        key:value
- */
-func ParserIniContent(content []byte) []*strategy.TreeStruct {
-	if content == nil {
-		return nil
-	}
-	bytesList := [][]byte{}
-	hasSlash := false
-	bytes := []byte{}
-	if content[len(content)-1] != 10 {
-		content = append(content, 10)
-	}
-	for i := 0; i < len(content); i++ {
-		value := content[i]
-		//出现斜杠过滤
-		if value == 47 {
-			hasSlash = true
-			continue
-		}
-		if hasSlash {
-			if value == 10 {
-				hasSlash = false
-			}
-			continue
-		}
-		// 通过\n截取长度
-		if value != 10 && value != 32 {
-			bytes = append(bytes, value)
-		} else if len(bytes) > 0 {
-			bytesList = append(bytesList, bytes)
-			bytes = []byte{}
-		}
-	}
-	if len(bytesList) == 0 {
-		return nil
-	}
-	//数据以树型结构存储
-	byteTreeList := initTreeFunc(bytesList)
-	return byteTreeList
-}
-
-/**
 *实现树状结构
  */
 func initTreeFunc(bytesList [][]byte) []*strategy.TreeStruct {
 	currentTree := strategy.TreeInstance()
 	//分隔符，91:'[' 46:'.' 58:':'
-	var segment = []int{91, 46}
+	var segment = []int{int(common.LeftBracket), int(common.Colon)}
 	infunc := InIntSliceSortedFunc(segment)
 	var rootTree = currentTree
 	//根节点设置为1

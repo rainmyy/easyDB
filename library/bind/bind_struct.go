@@ -7,6 +7,17 @@ import (
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
+type Struct struct {
+	length int
+	value  interface{}
+}
+
+func (s *Struct) Bind() {
+
+}
+func (s *Struct) GetValue() interface{} {
+	return s.value
+}
 func DefaultBindStruct(treeList []*strategy.TreeStruct, obj interface{}) []interface{} {
 	tagsMapList := getBindParams(obj)
 	if len(tagsMapList) == 0 {

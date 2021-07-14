@@ -21,14 +21,13 @@ type DeafultConf struct {
 func (conf *DeafultConf) Init() *DeafultConf {
 	confName := "global.conf"
 	filepath := "./conf/idc/bj/"
-
 	fileObj := file.FileInstance(confName, filepath)
 	dataTree, err := fileObj.Parser(common.IniType)
 	if err != nil {
 		return nil
 	}
-	resType := make(map[string]interface{})
-	bind.DefaultBind(dataTree, resType)
+	str := bind.StrigInstance()
+	bind.DefaultBind(dataTree, str)
 	return conf
 }
 

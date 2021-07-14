@@ -7,13 +7,24 @@ import (
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
-func DefaultBindString(treeList []*strategy.TreeStruct) *bytes.Buffer {
+type String struct {
+	value *bytes.Buffer
+}
+
+func (s *String) Bind(treeList []*strategy.TreeStruct) {
 	var buffer = bytes.NewBuffer([]byte{})
 	buffer = new(bytes.Buffer)
 	buffer.WriteRune(common.LeftRrance)
 	BindString(treeList, buffer)
 	buffer.WriteRune(common.RightRrance)
-	return buffer
+	s.value = buffer
+}
+
+func (s *String) GetValue() interface{} {
+	return s.value
+}
+func StrigInstance() *String {
+	return new(String)
 }
 
 /**

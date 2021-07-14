@@ -61,23 +61,23 @@ func (this *File) ParserIniContent() []*strategy.TreeStruct {
 	hasSlash := false
 	bytes := []byte{}
 	if this.content[len(this.content)-1] != 10 {
-		this.content = append(this.content, 10)
+		this.content = append(this.content, byte(common.LineBreak))
 	}
 	for i := 0; i < len(this.content); i++ {
 		value := this.content[i]
 		//出现斜杠过滤
-		if value == 47 {
+		if value == byte(common.Slash) || value == byte(common.Hash) || value == byte(common.Asterisk) {
 			hasSlash = true
 			continue
 		}
 		if hasSlash {
-			if value == 10 {
+			if value == byte(common.LineBreak) {
 				hasSlash = false
 			}
 			continue
 		}
 		// 通过\n截取长度
-		if value != 10 && value != 32 {
+		if value != byte(common.LineBreak) && value != byte(common.Blank) {
 			bytes = append(bytes, value)
 		} else if len(bytes) > 0 {
 			bytesList = append(bytesList, bytes)
@@ -87,6 +87,7 @@ func (this *File) ParserIniContent() []*strategy.TreeStruct {
 	if len(bytesList) == 0 {
 		return nil
 	}
+
 	//数据以树型结构存储
 	byteTreeList := initTreeFunc(bytesList)
 	return byteTreeList

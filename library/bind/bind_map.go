@@ -4,6 +4,22 @@ import (
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
+type Array struct {
+	length int
+	value  interface{}
+}
+
+/**
+* 获取数据树的map和slice
+ */
+func (a *Array) Bind(treeList []*strategy.TreeStruct) {
+
+}
+
+func (a *Array) GetValue() interface{} {
+	return a.value
+}
+
 /**
 * 获取数据树的map和slice
  */

@@ -15,8 +15,14 @@ const (
 	Colon        rune = ':'
 	Comma        rune = ','
 	None         rune = 'N'
+	Slash        rune = '/'
+	Hash         rune = '#'
+	Asterisk     rune = '*'
+	LineBreak    rune = '\n'
+	Blank        rune = ' '
 )
 
 const (
 	BindTag = "bind"
+	Json    = "json"
 )
