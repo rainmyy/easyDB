@@ -1,50 +1,40 @@
 package strategy
 
-import "sync"
-
 const treVal = 0.75
 
 type Stack struct {
-	top    *node
-	length int
-	lock   *sync.RWMutex
-}
-
-type node struct {
-	value interface{}
-	prev  *node
+	list *ListObj
 }
 
 func StackInstance() *Stack {
-	return &Stack{nil, 0, &sync.RWMutex{}}
+	return &Stack{new(ListObj)}
 }
 func (this *Stack) Len() int {
-	return this.length
+	return int(this.list.length)
 }
 func (this *Stack) Peek() interface{} {
-	if this.length == 0 {
+	if this.Len() == 0 {
 		return nil
 	}
-
-	return this.top.value
+	return this.list.head
 }
 
 func (this *Stack) Pop() interface{} {
-	this.lock.Lock()
-	defer this.lock.Unlock()
-	if this.length == 0 {
+	if this.Len() == 0 {
 		return nil
 	}
-	n := this.top
-	this.top = n.prev
-	this.length--
-	return n.value
+	value := this.list.head
+	result := this.list.Delete(0)
+	if !result {
+		return nil
+	}
+	return value
 }
 
-func (this *Stack) Push(value interface{}) {
-	this.lock.Lock()
-	this.lock.Unlock()
-	n := &node{value, this.top}
-	this.top = n
-	this.length++
+func (this *Stack) Push(value interface{}) bool {
+	if value == nil {
+		return false
+	}
+	result := this.list.Insert(0, value)
+	return result
 }

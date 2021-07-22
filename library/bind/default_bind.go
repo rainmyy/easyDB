@@ -8,7 +8,7 @@ import (
 )
 
 type Binder interface {
-	Bind(treeList []*strategy.TreeStruct)
+	Bind(treeList []*strategy.TreeStruct, obj interface{})
 	GetValue() interface{}
 }
 
@@ -22,7 +22,7 @@ func DefaultBind(tree []*strategy.TreeStruct, obj Binder) (interface{}, error) {
 
 	value := reflect.ValueOf(obj)
 	var buffer interface{}
-	obj.Bind(tree)
+	obj.Bind(tree, obj)
 	switch value.Kind() {
 	case reflect.String:
 		buffer = bytes.NewBuffer([]byte{})

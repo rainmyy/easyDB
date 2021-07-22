@@ -11,7 +11,7 @@ type String struct {
 	value *bytes.Buffer
 }
 
-func (s *String) Bind(treeList []*strategy.TreeStruct) {
+func (s *String) Bind(treeList []*strategy.TreeStruct, obj interface{}) {
 	var buffer = bytes.NewBuffer([]byte{})
 	buffer = new(bytes.Buffer)
 	buffer.WriteRune(common.LeftRrance)

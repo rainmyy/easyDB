@@ -10,7 +10,7 @@ import (
 )
 
 //file size 1GB
-var defaultSize = 1 << 30
+var defaultSize int64 = 1 << 30
 
 func (this *File) readFile() {
 	fileName := this.fileAbs
@@ -28,7 +28,7 @@ func (this *File) readFile() {
 		fileSize = fiStat.Size()
 	}
 	//大于1GB的文件并行读取
-	if fileSize > int64(defaultSize) {
+	if fileSize > defaultSize {
 		this.readFileByConcurrent(fi)
 	} else {
 		this.readFileByGeneral(fi)

@@ -12,8 +12,23 @@ type Struct struct {
 	value  interface{}
 }
 
-func (s *Struct) Bind() {
-
+func (s *Struct) Bind(treeList []*strategy.TreeStruct, obj interface{}) {
+	tagsMapList := getBindParams(obj)
+	if len(tagsMapList) == 0 {
+		return
+	}
+	robj := reflect.ValueOf(obj)
+	if robj.Kind() != reflect.Ptr || robj.IsNil() {
+		return
+	}
+	var ginBindStruct func(treeList []*strategy.TreeStruct)
+	ginBindStruct = func(treeList []*strategy.TreeStruct) {
+		if len(treeList) == 0 {
+			return
+		}
+	}
+	ginBindStruct(treeList)
+	return
 }
 func (s *Struct) GetValue() interface{} {
 	return s.value

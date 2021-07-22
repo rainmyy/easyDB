@@ -1,5 +1,7 @@
 package strategy
 
+import "time"
+
 type TreeStruct struct {
 	node         []*NodeStruct
 	children     []*TreeStruct
@@ -13,6 +15,16 @@ type NodeStruct struct {
 	data   []byte
 	name   []byte
 	length int
+	/**
+	* 数据的创建时间，隐藏数据不展示，通过该key值进行树的检索和排序
+	* 第一次创建数据时初始化该值，直到NodeStruct被回收前该值保持不变
+	 */
+	createtime time.Time
+	/**
+	* 数据的更新时间，隐藏数据不展示，通过该key值进行树的检索和排序
+	* 第一次创建数据时初始化该值，元素修改时修改该值
+	 */
+	updatetime time.Time
 }
 
 func (this *TreeStruct) GetNode() []*NodeStruct {
@@ -32,6 +44,7 @@ func (this *TreeStruct) SetNode(node *NodeStruct) *TreeStruct {
 	}
 	return this
 }
+
 func (this *TreeStruct) GetChildren() []*TreeStruct {
 	if this.children == nil {
 		return nil
@@ -116,7 +129,10 @@ func (this *NodeStruct) GetName() []byte {
 	return this.name
 }
 func NodeInstance(key []byte, value []byte) *NodeStruct {
-	lenth := 0
-
-	return &NodeStruct{name: key, data: value, length: lenth}
+	return &NodeStruct{
+		name:       key,
+		data:       value,
+		createtime: time.Now(),
+		updatetime: time.Now(),
+	}
 }

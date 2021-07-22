@@ -34,15 +34,14 @@ func (this *ListObj) Append(data interface{}) bool {
 	this.mutex.Lock()
 	defer this.mutex.Unlock()
 	var node = new(Node)
+	node.data = data
 	if this.length == 0 {
-		node.data = data
 		this.head = node
 		this.tail = node
 		this.length = 1
 		return true
 	}
 	tail := this.tail
-	node.data = data
 	node.prev = tail
 	tail.next = node
 	this.tail = node
@@ -50,8 +49,8 @@ func (this *ListObj) Append(data interface{}) bool {
 	return true
 }
 
-func (this *ListObj) Insert(index uint, node *Node) bool {
-	if node == nil {
+func (this *ListObj) Insert(index uint, data interface{}) bool {
+	if data == nil {
 		return false
 	}
 	if index > this.length {
@@ -59,6 +58,7 @@ func (this *ListObj) Insert(index uint, node *Node) bool {
 	}
 	this.mutex.Lock()
 	defer this.mutex.Unlock()
+	var node = new(Node)
 	if index == 0 {
 		node.next = this.head
 		this.head.prev = node
