@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/rainmyy/easyDB/library/strategy"
 )
 
 /**
@@ -14,9 +16,13 @@ type File struct {
 	name     string
 	filepath string
 	size     int64
-	content  []byte
+	content  []*strategy.TreeStruct
 	mode     string
 	isDir    bool
+	/**
+	* 文件数据类型有四种，ini型数据，yal型数据，json型数据，data型数据，默认数据类型为data型
+	 */
+	dataType int
 	modTime  time.Time
 	fileAbs  string
 }
@@ -35,14 +41,13 @@ func (this *File) fileInfo() *File {
 	return this
 }
 
-func FileInstance(name string, filepath string) *File {
-	fileObj := &File{name: name, filepath: filepath}
+func FileInstance(name string, filepath string, dataType int) *File {
+	fileObj := &File{name: name, filepath: filepath, dataType: dataType}
 	fileObj.getFilePath()
 	fileObj = fileObj.fileInfo()
 	if fileObj.isDir {
 		return nil
 	}
-	fileObj.readFile()
 	return fileObj
 }
 
@@ -54,7 +59,7 @@ func (this *File) getFilePath() {
 	this.fileAbs = fileAbs
 }
 
-func (this *File) GetContent() []byte {
+func (this *File) GetContent() []*strategy.TreeStruct {
 	return this.content
 }
 

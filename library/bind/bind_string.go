@@ -44,6 +44,9 @@ func BindString(treeList []*strategy.TreeStruct, buffer *bytes.Buffer) int {
 	currentNum := leafNum
 	for key, val := range treeList {
 		nodeList := val.GetNode()
+		if len(nodeList) <= 0 {
+			continue
+		}
 		node := nodeList[0]
 		if val.IsLeaf() {
 			if currentNum == leafNum {

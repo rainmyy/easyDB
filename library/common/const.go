@@ -1,10 +1,10 @@
 package common
 
 const (
-	IniType = iota
+	DataType = iota
+	IniType
 	YamlType
 	JsonType
-	DataType
 )
 
 const (
@@ -20,9 +20,10 @@ const (
 	Asterisk     rune = '*'
 	LineBreak    rune = '\n'
 	Blank        rune = ' '
+	Period       rune = '.'
 )
 
 const (
 	BindTag = "bind"
-	Json    = "json"
+	JsonTag = "json"
 )

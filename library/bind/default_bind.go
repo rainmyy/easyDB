@@ -13,7 +13,7 @@ type Binder interface {
 }
 
 /***
-*一套绑定参数的方法，默认将
+*一套绑定参数的方法，默认将数据转化成字符串
  */
 /**
 * 绑定实体和参数
@@ -35,5 +35,6 @@ func DefaultBind(tree []*strategy.TreeStruct, obj Binder) (interface{}, error) {
 		buffer = obj
 		//buffer = DefaultBindStruct(tree, obj)
 	}
+
 	return buffer, nil
 }

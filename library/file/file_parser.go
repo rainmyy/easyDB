@@ -1,94 +1,74 @@
 package file
 
 import (
+	"bufio"
 	"fmt"
-
-	"github.com/rainmyy/easyDB/library/common"
-	"github.com/rainmyy/easyDB/library/strategy"
+	"io"
+	"os"
 )
 
 /**
 * 解析数据，将数据解析成树形结构进行存储
  */
-func (this *File) Parser(objType int) ([]*strategy.TreeStruct, error) {
-	var tree []*strategy.TreeStruct
-	switch objType {
-	case common.IniType:
-		tree = this.ParserIniContent()
-	case common.YamlType:
-		tree = this.ParserYamlContent()
-	case common.JsonType:
-		tree = this.ParserjSONContent()
-	case common.DataType:
-		tree = this.ParserContent()
-	default:
-		tree = this.ParserContent()
+func (this *File) Parser(objType int) error {
+	err := this.readFile()
+	if err != nil {
+		return err
 	}
-
-	if tree == nil {
-		return nil, fmt.Errorf("data is none")
-	}
-	return tree, nil
-}
-
-func (this *File) ParserContent() []*strategy.TreeStruct {
 	return nil
 }
 
-func (this *File) ParserjSONContent() []*strategy.TreeStruct {
-	return nil
+//file size 1GB
+var defaultSize int64 = 1 << 30
+
+func (this *File) readFile() error {
+	fileName := this.fileAbs
+	fi, err := os.Open(fileName)
+	defer fi.Close()
+	if err != nil {
+		return err
+	}
+	fileSize := this.size
+	if fileSize == 0 {
+		fiStat, err := fi.Stat()
+		if err != nil {
+			return err
+		}
+		fileSize = fiStat.Size()
+	}
+	//大于1GB的文件并行读取
+	if fileSize > defaultSize {
+		return this.readFileByConcurrent(fi)
+	} else {
+		return this.readFileByGeneral(fi)
+	}
 }
-func (this *File) ParserYamlContent() []*strategy.TreeStruct {
+
+//
+func (this *File) readFileByGeneral(fileObj *os.File) error {
+	if fileObj == nil {
+		return fmt.Errorf("file is nil")
+	}
+	r := bufio.NewReader(fileObj)
+	b := make([]byte, this.size)
+	for {
+		_, err := r.Read(b)
+		if err != nil && err == io.EOF {
+			break
+		}
+	}
+	dataType := this.dataType
+	tree, err := parserDataFunc(this, dataType, b)
+	if err != nil {
+		return err
+	}
+	this.content = tree
 	return nil
 }
 
 /**
-*解析ini格式配置文件
-*desc:
-*[test]
-*    [..params]
-*        name:name1
-*        key:value
-*    [...params]
-*        name:name2
-*        key:value
+* 并行读取
  */
-func (this *File) ParserIniContent() []*strategy.TreeStruct {
-	if this.content == nil {
-		return nil
-	}
-	bytesList := [][]byte{}
-	hasSlash := false
-	bytes := []byte{}
-	if this.content[len(this.content)-1] != 10 {
-		this.content = append(this.content, byte(common.LineBreak))
-	}
-	for i := 0; i < len(this.content); i++ {
-		value := this.content[i]
-		//出现斜杠过滤
-		if value == byte(common.Slash) || value == byte(common.Hash) || value == byte(common.Asterisk) {
-			hasSlash = true
-			continue
-		}
-		if hasSlash {
-			if value == byte(common.LineBreak) {
-				hasSlash = false
-			}
-			continue
-		}
-		// 通过\n截取长度
-		if value != byte(common.LineBreak) && value != byte(common.Blank) {
-			bytes = append(bytes, value)
-		} else if len(bytes) > 0 {
-			bytesList = append(bytesList, bytes)
-			bytes = []byte{}
-		}
-	}
-	if len(bytesList) == 0 {
-		return nil
-	}
-
-	//数据以树型结构存储
-	byteTreeList := initTreeFunc(bytesList)
-	return byteTreeList
+func (this *File) readFileByConcurrent(fileObj *os.File) error {
+	return nil
 }
