@@ -50,7 +50,7 @@ func BindString(treeList []*TreeStruct, buffer *Buffer) int {
 			continue
 		}
 		node := nodeList[0]
-		buffer.WriteRune(LeftRrance)
+		buffer.WriteRune(LeftRance)
 		if val.IsLeaf() {
 			buffer.WriteString(formatBytes(node.GetName()))
 			buffer.WriteRune(Colon)
@@ -67,7 +67,7 @@ func BindString(treeList []*TreeStruct, buffer *Buffer) int {
 				buffer.WriteRune(RightBracket)
 			}
 		}
-		buffer.WriteRune(RightRrance)
+		buffer.WriteRune(RightRance)
 		if key != len(treeList)-1 {
 			buffer.WriteRune(Comma)
 		}
@@ -75,17 +75,10 @@ func BindString(treeList []*TreeStruct, buffer *Buffer) int {
 	return childrenNum
 }
 
-func formatBytes(bytes []byte) string {
-	str := Bytes2string(bytes)
-	if str == "" {
-		return str
-	}
-	return "\"" + str + "\""
-}
-
 /**
-* 解绑 字符串，将字符串转换成tre类型数据
+* unbind string,parser the string to tree data
  */
 func (s *String) UnBind() []*TreeStruct {
+
 	return nil
 }

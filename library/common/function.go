@@ -15,7 +15,7 @@ func SlicePlace(find byte, slice []byte) int {
 }
 
 /**
-* 切割切片,将一维数组切割成二维
+* cut slice, turn the one dimensional silce to double dimensional slice
  */
 func SplitSlice(num int, a []string) [][]string {
 	var sli [][]string
@@ -47,9 +47,12 @@ func SplitSlice(num int, a []string) [][]string {
 	}
 	return sli
 }
+
+/**
+* remove the space or newline from string
+ */
 func trimSpace(s string) string {
 	s = strings.Replace(s, " ", "", -1)
-	s = strings.Replace(s, "\n"+
-		"", "", -1)
+	s = strings.Replace(s, "\n"+"", "", -1)
 	return s
 }
