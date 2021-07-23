@@ -45,7 +45,6 @@ func BindString(treeList []*strategy.TreeStruct, buffer *bytes.Buffer) int {
 			leafNum++
 		}
 	}
-	//currentNum := leafNum
 	for key, val := range treeList {
 		nodeList := val.GetNode()
 		if len(nodeList) <= 0 {
@@ -85,6 +84,9 @@ func formatBytes(bytes []byte) string {
 	return "\"" + str + "\""
 }
 
+/**
+* 解绑 字符串，将字符串转换成tre类型数据
+ */
 func UnBindString(str string, tree *strategy.TreeStruct) {
 
 }

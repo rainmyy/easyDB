@@ -67,7 +67,7 @@ func (this *File) readFileByGeneral(fileObj *os.File) error {
 }
 
 /**
-* 并行读取,所有字符串按行分割
+* 并发读取,所有字符串按行分割
  */
 func (this *File) readFileByConcurrent(fileObj *os.File) error {
 	return nil

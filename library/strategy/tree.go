@@ -25,6 +25,11 @@ type NodeStruct struct {
 	* 第一次创建数据时初始化该值，元素修改时修改该值
 	 */
 	updatetime time.Time
+
+	/**
+	* 每次修改数据
+	 */
+	backup []byte
 }
 
 func (this *TreeStruct) GetNode() []*NodeStruct {
@@ -122,12 +127,25 @@ func TreeInstance() *TreeStruct {
 	}
 }
 
-func (this *NodeStruct) GetData() []byte {
-	return this.data
+func (this *NodeStruct) UpdateData(value []byte) *NodeStruct {
+	nodeData := this.data
+	hasDiff := false
+	if len(this.data) == len(value) {
+		for i := 0; i < len(nodeData); i++ {
+			if this.data[i] != value[i] {
+				hasDiff = true
+			}
+		}
+	}
+	if !hasDiff {
+		return this
+	}
+	this.backup = nodeData
+	this.data = value
+	this.updatetime = time.Now()
+	return this
 }
-func (this *NodeStruct) GetName() []byte {
-	return this.name
-}
+
 func NodeInstance(key []byte, value []byte) *NodeStruct {
 	return &NodeStruct{
 		name:       key,
@@ -135,4 +153,11 @@ func NodeInstance(key []byte, value []byte) *NodeStruct {
 		createtime: time.Now(),
 		updatetime: time.Now(),
 	}
+}
+
+func (this *NodeStruct) GetData() []byte {
+	return this.data
+}
+func (this *NodeStruct) GetName() []byte {
+	return this.name
 }

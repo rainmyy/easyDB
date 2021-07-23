@@ -5,7 +5,6 @@ import (
 	"sort"
 
 	"github.com/rainmyy/easyDB/library/common"
-	"github.com/rainmyy/easyDB/library/strategy"
 	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
@@ -63,7 +62,7 @@ func initTreeFunc(bytesList [][]byte) []*TreeStruct {
 			}
 			key := bytes[0:separatorPlace]
 			value := bytes[separatorPlace+1 : bytesLen]
-			nodeStruct = strategy.NodeInstance(key, value)
+			nodeStruct = NodeInstance(key, value)
 			if currentTree == nil {
 				continue
 			}
