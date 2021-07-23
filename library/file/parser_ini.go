@@ -1,0 +1,117 @@
+package file
+
+import (
+	"fmt"
+
+	"github.com/rainmyy/easyDB/library/common"
+	. "github.com/rainmyy/easyDB/library/strategy"
+)
+
+/**
+*parser ini conf file
+*desc:
+*[test]
+*    [..params]
+*        name:name1
+*        key:value
+*    [...params]
+*        name:name2
+*        key:value
+ */
+func ParserIniContent(data []byte) ([]*TreeStruct, error) {
+	if data == nil {
+		return nil, fmt.Errorf("content is nil")
+	}
+	bytesList := [][]byte{}
+
+	hasSlash := false
+	bytes := []byte{}
+	if data[len(data)-1] != byte(common.LineBreak) {
+		data = append(data, byte(common.LineBreak))
+	}
+	for i := 0; i < len(data); i++ {
+		value := data[i]
+		//filter the slash or hash or asterisk
+		if value == byte(common.Slash) || value == byte(common.Hash) || value == byte(common.Asterisk) {
+			hasSlash = true
+			continue
+		}
+		if hasSlash {
+			if value == byte(common.LineBreak) {
+				hasSlash = false
+			}
+			continue
+		}
+		//cut out the data with linebreak or black
+		if value != byte(common.LineBreak) && value != byte(common.Blank) {
+			bytes = append(bytes, value)
+		} else if len(bytes) > 0 {
+			bytesList = append(bytesList, bytes)
+			bytes = []byte{}
+		}
+	}
+	if len(bytesList) == 0 {
+		return nil, fmt.Errorf("bytes is empty")
+	}
+	//format the byte data with tree
+	byteTreeList := initTreeFunc(bytesList)
+	return byteTreeList, nil
+}
+
+/**
+*实现树状结构
+ */
+func initTreeFunc(bytesList [][]byte) []*TreeStruct {
+	currentTree := TreeInstance()
+	//分隔符，91:'[' 46:'.' 58:'.'
+	var segment = []int{int(common.LeftBracket), int(common.Period)}
+	infunc := InIntSliceSortedFunc(segment)
+	var rootTree = currentTree
+	//根节点设置为1
+	currentTree.SetHight(1)
+	for i := 0; i < len(bytesList); i++ {
+		bytes := bytesList[i]
+		bytesLen := len(bytes)
+		if bytesLen == 0 {
+			continue
+		}
+		tempNum := 0
+		for j := 0; j < bytesLen; j++ {
+			if infunc(int(bytes[j])) {
+				tempNum++
+			}
+		}
+		treeStruct := TreeInstance()
+		currentHigh := currentTree.GetHight()
+		var nodeStruct *NodeStruct
+		if tempNum > 0 && len(bytes) > tempNum {
+			bytes = bytes[tempNum : bytesLen-1]
+
+			nodeStruct = NodeInstance(bytes, []byte{})
+			for tempNum < currentHigh {
+				currentTree = currentTree.GetParent()
+				currentHigh = currentTree.GetHight()
+			}
+			treeStruct.SetNode(nodeStruct)
+			treeStruct.SetParent(currentTree)
+			currentTree.SetChildren(treeStruct)
+			currentTree = treeStruct
+		} else if tempNum == 0 {
+			//key:vaule类型的值
+			separatorPlace := common.SlicePlace(byte(common.Colon), bytes)
+			if separatorPlace <= 0 {
+				continue
+			}
+			key := bytes[0:separatorPlace]
+			value := bytes[separatorPlace+1 : bytesLen]
+			nodeStruct = NodeInstance(key, value)
+			if currentTree == nil {
+				continue
+			}
+			treeStruct.SetNode(nodeStruct)
+			treeStruct.SetParent(currentTree)
+			currentTree.SetChildren(treeStruct)
+		}
+	}
+	return rootTree.GetChildren()
+}

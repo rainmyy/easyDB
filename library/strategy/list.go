@@ -30,7 +30,6 @@ func (this *ListObj) Append(data interface{}) bool {
 	if data == nil {
 		return false
 	}
-
 	this.mutex.Lock()
 	defer this.mutex.Unlock()
 	var node = new(Node)

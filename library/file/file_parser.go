@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/rainmyy/easyDB/library/common"
+	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
 /**
@@ -71,4 +74,19 @@ func (this *File) readFileByGeneral(fileObj *os.File) error {
  */
 func (this *File) readFileByConcurrent(fileObj *os.File) error {
 	return nil
+}
+
+func parserDataFunc(file *File, objType int, data []byte) ([]*TreeStruct, error) {
+	switch objType {
+	case common.IniType:
+		return ParserIniContent(data)
+	case common.YamlType:
+		return ParserYamlContent(data)
+	case common.JsonType:
+		return ParserJsonContent(data)
+	case common.DataType:
+		return ParserContent(data)
+	default:
+		return ParserContent(data)
+	}
 }

@@ -27,7 +27,7 @@ type NodeStruct struct {
 	updatetime time.Time
 
 	/**
-	* 每次修改数据
+	* 每次修改数据备份已有数据
 	 */
 	backup []byte
 }
@@ -73,7 +73,7 @@ func (this *TreeStruct) SetChildren(children *TreeStruct) *TreeStruct {
 }
 
 /**
-*上一个节点
+*last node data
  */
 func (this *TreeStruct) GetParent() *TreeStruct {
 	if this.parent == nil {
