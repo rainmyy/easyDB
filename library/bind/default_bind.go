@@ -5,8 +5,11 @@ import (
 )
 
 type Binder interface {
+	/**
+	* bind the tree list to object data
+	 */
 	Bind(treeList []*TreeStruct)
-	UnBind(obj interface{})
+	UnBind() []*TreeStruct
 	GetValue() interface{}
 }
 
@@ -19,6 +22,6 @@ func DefaultBind(tree []*TreeStruct, obj Binder) interface{} {
 	return bindData
 }
 
-func DefaultUnBind(obj interface{}) {
-
+func DefaultUnBind(obj Binder) []*TreeStruct {
+	return obj.UnBind()
 }

@@ -86,6 +86,6 @@ func formatBytes(bytes []byte) string {
 /**
 * 解绑 字符串，将字符串转换成tre类型数据
  */
-func UnBindString(str string, tree *TreeStruct) {
-
+func (s *String) UnBind() []*TreeStruct {
+	return nil
 }

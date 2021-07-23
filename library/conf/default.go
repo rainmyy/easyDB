@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	. "github.com/rainmyy/easyDB/library/bind"
-	"github.com/rainmyy/easyDB/library/common"
-	"github.com/rainmyy/easyDB/library/file"
+	. "github.com/rainmyy/easyDB/library/common"
+	. "github.com/rainmyy/easyDB/library/file"
 )
 
 /**
@@ -21,8 +21,8 @@ type DeafultConf struct {
 
 func (conf *DeafultConf) Init() *DeafultConf {
 	confName := "./conf/idc/bj/global.conf"
-	fileObj := file.FileInstance(confName)
-	err := fileObj.Parser(common.IniType)
+	fileObj := FileInstance(confName)
+	err := fileObj.Parser(IniType)
 	if err != nil {
 		print(err.Error())
 		return nil

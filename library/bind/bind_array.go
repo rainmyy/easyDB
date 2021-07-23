@@ -66,3 +66,7 @@ func (a *Array) Bind(treeList []*TreeStruct) {
 func (a *Array) GetValue() interface{} {
 	return a.value
 }
+
+func (a *Array) UnBind() []*TreeStruct {
+	return nil
+}

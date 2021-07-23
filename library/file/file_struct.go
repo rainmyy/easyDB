@@ -44,16 +44,6 @@ func (this *File) fileInfo() *File {
 	return this
 }
 
-func FileInstance(name string) *File {
-	fileObj := &File{}
-	fileObj.getFilePath(name)
-	fileObj = fileObj.fileInfo()
-	if fileObj.isDir {
-		return nil
-	}
-	return fileObj
-}
-
 func (this *File) getFilePath(fullname string) {
 	fileAbs, err := filepath.Abs(fullname)
 	if err != nil {
@@ -105,4 +95,14 @@ func (this *File) checkFileExist(filename string) bool {
 		exist = false
 	}
 	return exist
+}
+
+func FileInstance(name string) *File {
+	fileObj := &File{}
+	fileObj.getFilePath(name)
+	fileObj = fileObj.fileInfo()
+	if fileObj.isDir {
+		return nil
+	}
+	return fileObj
 }
