@@ -1,9 +1,10 @@
 package conf
 
 import (
+	"fmt"
 	"sync"
 
-	"github.com/rainmyy/easyDB/library/bind"
+	. "github.com/rainmyy/easyDB/library/bind"
 	"github.com/rainmyy/easyDB/library/common"
 	"github.com/rainmyy/easyDB/library/file"
 )
@@ -28,8 +29,12 @@ func (conf *DeafultConf) Init() *DeafultConf {
 		return nil
 	}
 	//dataTree := common.Bytes2TreeStruct(fileObj.GetContent())
-	str := bind.StrigInstance()
-	bind.DefaultBind(fileObj.GetContent(), str)
+	str := StrigInstance()
+	//array := ArrayInterface()
+	bindData := DefaultBind(fileObj.GetContent(), str)
+	fmt.Print(bindData)
+	//bytes, err := json.Marshal(bindData)
+	//fmt.Print(string(bytes))
 	return conf
 }
 

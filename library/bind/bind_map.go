@@ -6,24 +6,17 @@ import (
 
 type Array struct {
 	length int
-	value  interface{}
+	value  []map[string]interface{}
+}
+
+func ArrayInterface() *Array {
+	return &Array{value: make([]map[string]interface{}, 0)}
 }
 
 /**
 * 获取数据树的map和slice
  */
 func (a *Array) Bind(treeList []*strategy.TreeStruct) {
-
-}
-
-func (a *Array) GetValue() interface{} {
-	return a.value
-}
-
-/**
-* 获取数据树的map和slice
- */
-func DefaultBindMap(treeList []*strategy.TreeStruct) []map[string]interface{} {
 	var treeMapList = make([]map[string]interface{}, 0)
 	var getBindMap func(tree []*strategy.TreeStruct) []map[string]interface{}
 	/***
@@ -67,5 +60,9 @@ func DefaultBindMap(treeList []*strategy.TreeStruct) []map[string]interface{} {
 		return treeMapList
 	}
 	treeMapList = getBindMap(treeList)
-	return treeMapList
+	a.value = treeMapList
+}
+
+func (a *Array) GetValue() interface{} {
+	return a.value
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/rainmyy/easyDB/library/common"
 	"github.com/rainmyy/easyDB/library/strategy"
+	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
 func InIntSliceSortedFunc(stack []int) func(int) bool {
@@ -19,8 +20,8 @@ func InIntSliceSortedFunc(stack []int) func(int) bool {
 /**
 *实现树状结构
  */
-func initTreeFunc(bytesList [][]byte) []*strategy.TreeStruct {
-	currentTree := strategy.TreeInstance()
+func initTreeFunc(bytesList [][]byte) []*TreeStruct {
+	currentTree := TreeInstance()
 	//分隔符，91:'[' 46:'.' 58:'.'
 	var segment = []int{int(common.LeftBracket), int(common.Period)}
 	infunc := InIntSliceSortedFunc(segment)
@@ -39,13 +40,13 @@ func initTreeFunc(bytesList [][]byte) []*strategy.TreeStruct {
 				tempNum++
 			}
 		}
-		treeStruct := strategy.TreeInstance()
+		treeStruct := TreeInstance()
 		currentHigh := currentTree.GetHight()
-		var nodeStruct *strategy.NodeStruct
+		var nodeStruct *NodeStruct
 		if tempNum > 0 && len(bytes) > tempNum {
 			bytes = bytes[tempNum : bytesLen-1]
 
-			nodeStruct = strategy.NodeInstance(bytes, []byte{})
+			nodeStruct = NodeInstance(bytes, []byte{})
 			for tempNum < currentHigh {
 				currentTree = currentTree.GetParent()
 				currentHigh = currentTree.GetHight()
@@ -81,14 +82,14 @@ func max(a, b int) int {
 	return b
 }
 
-func parserDataFunc(file *File, objType int, data []byte) ([]*strategy.TreeStruct, error) {
+func parserDataFunc(file *File, objType int, data []byte) ([]*TreeStruct, error) {
 	switch objType {
 	case common.IniType:
 		return ParserIniContent(data)
 	case common.YamlType:
 		return ParserYamlContent(data)
 	case common.JsonType:
-		return ParserjSONContent(data)
+		return ParserJsonContent(data)
 	case common.DataType:
 		return ParserContent(data)
 	default:
@@ -96,14 +97,14 @@ func parserDataFunc(file *File, objType int, data []byte) ([]*strategy.TreeStruc
 	}
 }
 
-func ParserContent(data []byte) ([]*strategy.TreeStruct, error) {
+func ParserContent(dason []byte) ([]*TreeStruct, error) {
 	return nil, nil
 }
 
-func ParserjSONContent(data []byte) ([]*strategy.TreeStruct, error) {
+func ParserJsonContent(data []byte) ([]*TreeStruct, error) {
 	return nil, nil
 }
-func ParserYamlContent(data []byte) ([]*strategy.TreeStruct, error) {
+func ParserYamlContent(data []byte) ([]*TreeStruct, error) {
 	return nil, nil
 }
 
@@ -118,7 +119,7 @@ func ParserYamlContent(data []byte) ([]*strategy.TreeStruct, error) {
 *        name:name2
 *        key:value
  */
-func ParserIniContent(data []byte) ([]*strategy.TreeStruct, error) {
+func ParserIniContent(data []byte) ([]*TreeStruct, error) {
 	if data == nil {
 		return nil, fmt.Errorf("content is nil")
 	}

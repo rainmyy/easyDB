@@ -1,14 +1,11 @@
 package bind
 
 import (
-	"bytes"
-	"reflect"
-
 	"github.com/rainmyy/easyDB/library/strategy"
 )
 
 type Binder interface {
-	Bind(treeList []*strategy.TreeStruct, obj interface{})
+	Bind(treeList []*strategy.TreeStruct)
 	GetValue() interface{}
 }
 
@@ -18,23 +15,8 @@ type Binder interface {
 /**
 * 绑定实体和参数
  */
-func DefaultBind(tree []*strategy.TreeStruct, obj Binder) (interface{}, error) {
-
-	value := reflect.ValueOf(obj)
-	var buffer interface{}
-	obj.Bind(tree, obj)
-	switch value.Kind() {
-	case reflect.String:
-		buffer = bytes.NewBuffer([]byte{})
-		buffer = obj.GetValue()
-		//buffer = DefaultBindString(tree)
-	case reflect.Map:
-		buffer = make([]map[string]interface{}, 0)
-		//buffer = DefaultBindMap(tree)
-	case reflect.Struct:
-		buffer = obj
-		//buffer = DefaultBindStruct(tree, obj)
-	}
-
-	return buffer, nil
+func DefaultBind(tree []*strategy.TreeStruct, obj Binder) interface{} {
+	obj.Bind(tree)
+	bindData := obj.GetValue()
+	return bindData
 }

@@ -11,12 +11,16 @@ type String struct {
 	value *bytes.Buffer
 }
 
-func (s *String) Bind(treeList []*strategy.TreeStruct, obj interface{}) {
+func (s *String) Bind(treeList []*strategy.TreeStruct) {
 	var buffer = bytes.NewBuffer([]byte{})
 	buffer = new(bytes.Buffer)
-	buffer.WriteRune(common.LeftRrance)
+	if len(treeList) > 1 {
+		buffer.WriteRune(common.LeftBracket)
+	}
 	BindString(treeList, buffer)
-	buffer.WriteRune(common.RightRrance)
+	if len(treeList) > 1 {
+		buffer.WriteRune(common.RightBracket)
+	}
 	s.value = buffer
 }
 
@@ -28,7 +32,7 @@ func StrigInstance() *String {
 }
 
 /**
-* 序列化tree:{key:name, key2:{name:1, name2:2}, key3:[{name:1, name2:3}, {name:3, name:4}]}
+* 序列化tree:[{"test":[{"params":[{"name":"name1"},{"key":"value"},{"count":{"value":"www"}}]},{"params":[{"name":"name2"},{"key":"value"}]}]}]
  */
 func BindString(treeList []*strategy.TreeStruct, buffer *bytes.Buffer) int {
 	if len(treeList) == 0 {
@@ -41,27 +45,21 @@ func BindString(treeList []*strategy.TreeStruct, buffer *bytes.Buffer) int {
 			leafNum++
 		}
 	}
-	currentNum := leafNum
+	//currentNum := leafNum
 	for key, val := range treeList {
 		nodeList := val.GetNode()
 		if len(nodeList) <= 0 {
 			continue
 		}
 		node := nodeList[0]
+		buffer.WriteRune(common.LeftRrance)
 		if val.IsLeaf() {
-			if currentNum == leafNum {
-				buffer.WriteRune(common.LeftRrance)
-			}
-			buffer.WriteString(string(node.GetName()))
+			buffer.WriteString(formatBytes(node.GetName()))
 			buffer.WriteRune(common.Colon)
-			buffer.WriteString(string(node.GetData()))
-			leafNum--
-			if leafNum == 0 {
-				buffer.WriteRune(common.RightRrance)
-			}
+			buffer.WriteString(formatBytes(node.GetData()))
 		} else {
 			childrenNum = len(val.GetChildren())
-			buffer.WriteString(string(node.GetName()))
+			buffer.WriteString(formatBytes(node.GetName()))
 			buffer.WriteRune(common.Colon)
 			if childrenNum > 1 {
 				buffer.WriteRune(common.LeftBracket)
@@ -71,11 +69,20 @@ func BindString(treeList []*strategy.TreeStruct, buffer *bytes.Buffer) int {
 				buffer.WriteRune(common.RightBracket)
 			}
 		}
+		buffer.WriteRune(common.RightRrance)
 		if key != len(treeList)-1 {
 			buffer.WriteRune(common.Comma)
 		}
 	}
 	return childrenNum
+}
+
+func formatBytes(bytes []byte) string {
+	str := common.Bytes2string(bytes)
+	if str == "" {
+		return str
+	}
+	return "\"" + str + "\""
 }
 
 func UnBindString(str string, tree *strategy.TreeStruct) {
