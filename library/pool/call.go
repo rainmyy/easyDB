@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/rainmyy/easyDB/library/res"
+	. "github.com/rainmyy/easyDB/library/res"
 )
 
 func FuncCall(function interface{}, args ...interface{}) []interface{} {
 	var resultList = make([]interface{}, 0)
 	result := func(erroMsg string) []interface{} {
-		result := res.ResultInstance()
+		result := ResultInstance()
 		err := fmt.Errorf(erroMsg)
 		result.SetResult(-1, err, "")
 		resultList = append(resultList, result)
@@ -58,7 +58,7 @@ func FuncCall(function interface{}, args ...interface{}) []interface{} {
 		case reflect.TypeOf(string("")):
 			resultList = append(resultList, resultValue[i].Interface().(string))
 		default:
-			resultList = append(resultList, resultValue[i].Interface().(*res.Result))
+			resultList = append(resultList, resultValue[i].Interface().(*Result))
 		}
 	}
 	if len(outs) > 1 && len(resultList) == 0 {
@@ -67,15 +67,15 @@ func FuncCall(function interface{}, args ...interface{}) []interface{} {
 	return resultList
 }
 
-func FormatResult(resultList []interface{}) *res.Reponse {
-	var response = new(res.Reponse)
+func FormatResult(resultList []interface{}) *Reponse {
+	var response = new(Reponse)
 	for _, reuslt := range resultList {
 		if reuslt == nil {
 			continue
 		}
 		switch reuslt.(type) {
-		case *res.Result:
-			response.Result = reuslt.(*res.Result)
+		case *Result:
+			response.Result = reuslt.(*Result)
 		case int:
 			//退出标志
 			if reuslt.(int) == -1 {

@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/rainmyy/easyDB/library/common"
+	. "github.com/rainmyy/easyDB/library/common"
 	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
@@ -39,7 +39,7 @@ func (this *File) readFile() error {
 		}
 		fileSize = fiStat.Size()
 	}
-	//大于1GB的文件并行读取
+	//if the file larger than 1GB,concurrently read and parse files
 	if fileSize > defaultSize {
 		return this.readFileByConcurrent(fi)
 	} else {
@@ -60,8 +60,7 @@ func (this *File) readFileByGeneral(fileObj *os.File) error {
 			break
 		}
 	}
-	dataType := this.dataType
-	tree, err := parserDataFunc(this, dataType, b)
+	tree, err := parserDataFunc(this, b)
 	if err != nil {
 		return err
 	}
@@ -70,22 +69,24 @@ func (this *File) readFileByGeneral(fileObj *os.File) error {
 }
 
 /**
-* 并发读取,所有字符串按行分割
+* 并发读取,所有字符串按行分割， 暂不支持多行关联行数据
  */
 func (this *File) readFileByConcurrent(fileObj *os.File) error {
 	return nil
 }
 
-func parserDataFunc(file *File, objType int, data []byte) ([]*TreeStruct, error) {
+/**
+* 所有的数
+ */
+func parserDataFunc(file *File, data []byte) ([]*TreeStruct, error) {
+	var objType = file.getDataType()
 	switch objType {
-	case common.IniType:
+	case IniType:
 		return ParserIniContent(data)
-	case common.YamlType:
+	case YamlType:
 		return ParserYamlContent(data)
-	case common.JsonType:
+	case JsonType:
 		return ParserJsonContent(data)
-	case common.DataType:
-		return ParserContent(data)
 	default:
 		return ParserContent(data)
 	}

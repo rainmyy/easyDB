@@ -1,7 +1,7 @@
 package bind
 
 import (
-	"github.com/rainmyy/easyDB/library/strategy"
+	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
 type Array struct {
@@ -16,13 +16,13 @@ func ArrayInterface() *Array {
 /**
 * 获取数据树的map和slice
  */
-func (a *Array) Bind(treeList []*strategy.TreeStruct) {
+func (a *Array) Bind(treeList []*TreeStruct) {
 	var treeMapList = make([]map[string]interface{}, 0)
-	var getBindMap func(tree []*strategy.TreeStruct) []map[string]interface{}
+	var getBindMap func(tree []*TreeStruct) []map[string]interface{}
 	/***
 	* 递归方式获取
 	 */
-	getBindMap = func(tree []*strategy.TreeStruct) []map[string]interface{} {
+	getBindMap = func(tree []*TreeStruct) []map[string]interface{} {
 		if len(tree) == 0 {
 			return nil
 		}

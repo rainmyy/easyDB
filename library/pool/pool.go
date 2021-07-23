@@ -3,7 +3,7 @@ package pool
 import (
 	"sync"
 
-	res "github.com/rainmyy/easyDB/library/res"
+	. "github.com/rainmyy/easyDB/library/res"
 )
 
 const (
@@ -16,8 +16,8 @@ type Pool struct {
 	RuntineNumber int
 	Total         int
 	taskQuery     chan *Queue
-	taskResult    chan map[string]*res.Reponse
-	taskResponse  map[string]*res.Reponse
+	taskResult    chan map[string]*Reponse
+	taskResponse  map[string]*Reponse
 }
 
 /**
@@ -25,7 +25,7 @@ type Pool struct {
 */
 type Queue struct {
 	Name     string
-	result   chan *res.Reponse
+	result   chan *Reponse
 	Excel    *ExcelFunc
 	CallBack *CallBackFunc
 }
@@ -47,7 +47,7 @@ func QueryInit(name string, function interface{}, params ...interface{}) *Queue 
 	excelFunc := &ExcelFunc{Function: function, Params: params}
 	query := &Queue{Name: name,
 		Excel:  excelFunc,
-		result: make(chan *res.Reponse, 1),
+		result: make(chan *Reponse, 1),
 	}
 	return query
 }
@@ -61,8 +61,8 @@ func (this *Pool) Init(runtineNumber, total int) *Pool {
 	this.RuntineNumber = runtineNumber
 	this.Total = total
 	this.taskQuery = make(chan *Queue, runtineNumber)
-	this.taskResult = make(chan map[string]*res.Reponse, runtineNumber)
-	this.taskResponse = make(map[string]*res.Reponse)
+	this.taskResult = make(chan map[string]*Reponse, runtineNumber)
+	this.taskResponse = make(map[string]*Reponse)
 	return this
 }
 func (this *Pool) Start() {
@@ -77,12 +77,12 @@ func (this *Pool) Start() {
 			defer mutex.Done()
 			task, ok := <-this.taskQuery
 			taskName := task.Name
-			result := map[string]*res.Reponse{
+			result := map[string]*Reponse{
 				taskName: nil,
 			}
-			response := res.ReponseIntance()
+			response := ReponseIntance()
 			if !ok {
-				res := res.ResultInstance().ErrorParamsResult()
+				res := ResultInstance().ErrorParamsResult()
 				response.Result = res
 				result[taskName] = response
 				this.taskResult <- result
@@ -91,13 +91,13 @@ func (this *Pool) Start() {
 			task.excelQuery()
 			taskResult, ok := <-task.result
 			if !ok {
-				res := res.ResultInstance().EmptyResult()
+				res := ResultInstance().EmptyResult()
 				response.Result = res
 				result[taskName] = response
 				this.taskResult <- result
 				return
 			}
-			result = map[string]*res.Reponse{
+			result = map[string]*Reponse{
 				taskName: taskResult,
 			}
 			this.taskResult <- result
@@ -113,7 +113,7 @@ func (this *Pool) Start() {
 	}
 }
 
-func (this *Pool) TaskResult() map[string]*res.Reponse {
+func (this *Pool) TaskResult() map[string]*Reponse {
 	return this.taskResponse
 }
 

@@ -6,7 +6,12 @@ const (
 	YamlType
 	JsonType
 )
-
+const (
+	DataSuffix = ".data"
+	IniSuffix  = ".conf"
+	JsonSuffix = ".json"
+	YamlSuffix = ".yaml"
+)
 const (
 	LeftBracket  rune = '['
 	RightBracket rune = ']'

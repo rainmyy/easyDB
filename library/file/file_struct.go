@@ -3,10 +3,12 @@ package file
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"time"
 
-	"github.com/rainmyy/easyDB/library/strategy"
+	. "github.com/rainmyy/easyDB/library/common"
+	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
 /**
@@ -16,7 +18,7 @@ type File struct {
 	name     string
 	filepath string
 	size     int64
-	content  []*strategy.TreeStruct
+	content  []*TreeStruct
 	mode     string
 	isDir    bool
 	/**
@@ -38,12 +40,13 @@ func (this *File) fileInfo() *File {
 	this.mode = fi.Mode().String()
 	this.modTime = fi.ModTime()
 	this.isDir = fi.IsDir()
+	this.dataType = this.getDataType()
 	return this
 }
 
-func FileInstance(name string, filepath string, dataType int) *File {
-	fileObj := &File{name: name, filepath: filepath, dataType: dataType}
-	fileObj.getFilePath()
+func FileInstance(name string) *File {
+	fileObj := &File{}
+	fileObj.getFilePath(name)
 	fileObj = fileObj.fileInfo()
 	if fileObj.isDir {
 		return nil
@@ -51,15 +54,32 @@ func FileInstance(name string, filepath string, dataType int) *File {
 	return fileObj
 }
 
-func (this *File) getFilePath() {
-	fileAbs, err := filepath.Abs(filepath.Join(this.filepath, this.name))
+func (this *File) getFilePath(fullname string) {
+	fileAbs, err := filepath.Abs(fullname)
 	if err != nil {
 		return
 	}
+	fileName := path.Base(fullname)
+	this.name = fileName
 	this.fileAbs = fileAbs
 }
 
-func (this *File) GetContent() []*strategy.TreeStruct {
+func (this *File) getDataType() (dataType int) {
+	fileSuffix := path.Ext(this.name)
+	switch fileSuffix {
+	case IniSuffix:
+		dataType = IniType
+	case JsonSuffix:
+		dataType = JsonType
+	case YamlSuffix:
+		dataType = YamlType
+	default:
+		dataType = DataType
+	}
+	return
+}
+
+func (this *File) GetContent() []*TreeStruct {
 	return this.content
 }
 

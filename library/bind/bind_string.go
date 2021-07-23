@@ -1,25 +1,24 @@
 package bind
 
 import (
-	"bytes"
+	. "bytes"
 
-	"github.com/rainmyy/easyDB/library/common"
-	"github.com/rainmyy/easyDB/library/strategy"
+	. "github.com/rainmyy/easyDB/library/common"
+	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
 type String struct {
-	value *bytes.Buffer
+	value *Buffer
 }
 
-func (s *String) Bind(treeList []*strategy.TreeStruct) {
-	var buffer = bytes.NewBuffer([]byte{})
-	buffer = new(bytes.Buffer)
+func (s *String) Bind(treeList []*TreeStruct) {
+	var buffer = NewBuffer([]byte{})
 	if len(treeList) > 1 {
-		buffer.WriteRune(common.LeftBracket)
+		buffer.WriteRune(LeftBracket)
 	}
 	BindString(treeList, buffer)
 	if len(treeList) > 1 {
-		buffer.WriteRune(common.RightBracket)
+		buffer.WriteRune(RightBracket)
 	}
 	s.value = buffer
 }
@@ -34,7 +33,7 @@ func StrigInstance() *String {
 /**
 * 序列化tree:[{"test":[{"params":[{"name":"name1"},{"key":"value"},{"count":{"value":"www"}}]},{"params":[{"name":"name2"},{"key":"value"}]}]}]
  */
-func BindString(treeList []*strategy.TreeStruct, buffer *bytes.Buffer) int {
+func BindString(treeList []*TreeStruct, buffer *Buffer) int {
 	if len(treeList) == 0 {
 		return 0
 	}
@@ -51,33 +50,33 @@ func BindString(treeList []*strategy.TreeStruct, buffer *bytes.Buffer) int {
 			continue
 		}
 		node := nodeList[0]
-		buffer.WriteRune(common.LeftRrance)
+		buffer.WriteRune(LeftRrance)
 		if val.IsLeaf() {
 			buffer.WriteString(formatBytes(node.GetName()))
-			buffer.WriteRune(common.Colon)
+			buffer.WriteRune(Colon)
 			buffer.WriteString(formatBytes(node.GetData()))
 		} else {
 			childrenNum = len(val.GetChildren())
 			buffer.WriteString(formatBytes(node.GetName()))
-			buffer.WriteRune(common.Colon)
+			buffer.WriteRune(Colon)
 			if childrenNum > 1 {
-				buffer.WriteRune(common.LeftBracket)
+				buffer.WriteRune(LeftBracket)
 			}
 			BindString(val.GetChildren(), buffer)
 			if childrenNum > 1 {
-				buffer.WriteRune(common.RightBracket)
+				buffer.WriteRune(RightBracket)
 			}
 		}
-		buffer.WriteRune(common.RightRrance)
+		buffer.WriteRune(RightRrance)
 		if key != len(treeList)-1 {
-			buffer.WriteRune(common.Comma)
+			buffer.WriteRune(Comma)
 		}
 	}
 	return childrenNum
 }
 
 func formatBytes(bytes []byte) string {
-	str := common.Bytes2string(bytes)
+	str := Bytes2string(bytes)
 	if str == "" {
 		return str
 	}
@@ -87,6 +86,6 @@ func formatBytes(bytes []byte) string {
 /**
 * 解绑 字符串，将字符串转换成tre类型数据
  */
-func UnBindString(str string, tree *strategy.TreeStruct) {
+func UnBindString(str string, tree *TreeStruct) {
 
 }

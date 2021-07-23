@@ -4,7 +4,7 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/rainmyy/easyDB/library/strategy"
+	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
 type Struct struct {
@@ -12,7 +12,7 @@ type Struct struct {
 	value  interface{}
 }
 
-func (s *Struct) Bind(treeList []*strategy.TreeStruct, obj interface{}) {
+func (s *Struct) Bind(treeList []*TreeStruct, obj interface{}) {
 	tagsMapList := getBindParams(obj)
 	if len(tagsMapList) == 0 {
 		return
@@ -21,8 +21,8 @@ func (s *Struct) Bind(treeList []*strategy.TreeStruct, obj interface{}) {
 	if robj.Kind() != reflect.Ptr || robj.IsNil() {
 		return
 	}
-	var ginBindStruct func(treeList []*strategy.TreeStruct)
-	ginBindStruct = func(treeList []*strategy.TreeStruct) {
+	var ginBindStruct func(treeList []*TreeStruct)
+	ginBindStruct = func(treeList []*TreeStruct) {
 		if len(treeList) == 0 {
 			return
 		}
@@ -33,7 +33,7 @@ func (s *Struct) Bind(treeList []*strategy.TreeStruct, obj interface{}) {
 func (s *Struct) GetValue() interface{} {
 	return s.value
 }
-func DefaultBindStruct(treeList []*strategy.TreeStruct, obj interface{}) []interface{} {
+func DefaultBindStruct(treeList []*TreeStruct, obj interface{}) []interface{} {
 	tagsMapList := getBindParams(obj)
 	if len(tagsMapList) == 0 {
 		return nil
@@ -42,8 +42,8 @@ func DefaultBindStruct(treeList []*strategy.TreeStruct, obj interface{}) []inter
 	if robj.Kind() != reflect.Ptr || robj.IsNil() {
 		return nil
 	}
-	var ginBindStruct func(treeList []*strategy.TreeStruct)
-	ginBindStruct = func(treeList []*strategy.TreeStruct) {
+	var ginBindStruct func(treeList []*TreeStruct)
+	ginBindStruct = func(treeList []*TreeStruct) {
 		if len(treeList) == 0 {
 			return
 		}
