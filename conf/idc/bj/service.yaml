@@ -1,0 +1,7 @@
+serviceName: seeta
+serviceAddr: Beijing
+https: true
+nginx:
+    Port: 80
+    LogPath: "/var/log/nginx/nginx.log"
+    Path: "/opt/nginx/"
