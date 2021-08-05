@@ -97,7 +97,7 @@ func initTreeFunc(bytesList [][]byte) []*TreeStruct {
 			currentTree.SetChildren(treeStruct)
 			currentTree = treeStruct
 		} else if tempNum == 0 {
-			//key:vaule类型的值
+			//type of key:vaule
 			separatorPlace := SlicePlace(byte(Colon), bytes)
 			if separatorPlace <= 0 {
 				continue

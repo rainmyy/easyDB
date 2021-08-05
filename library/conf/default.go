@@ -20,9 +20,13 @@ type DeafultConf struct {
 }
 
 func (conf *DeafultConf) Init() *DeafultConf {
-	confName := "./conf/idc/bj/global.conf"
-	fileObj := FileInstance(confName)
-	err := fileObj.Parser(IniType)
+	confName := "./conf/idc/bj/service.yaml"
+	fileObj, err := FileInstance(confName)
+	if err != nil {
+		fmt.Print(err.Error())
+		return nil
+	}
+	err = fileObj.Parser(IniType)
 	if err != nil {
 		print(err.Error())
 		return nil

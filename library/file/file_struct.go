@@ -29,19 +29,19 @@ type File struct {
 	fileAbs  string
 }
 
-func (this *File) fileInfo() *File {
+func (this *File) fileInfo() (*File, error) {
 	fi, err := os.Stat(this.fileAbs)
 	if err != nil {
-		return this
+		return this, err
 	} else if os.IsNotExist(err) {
-		return this
+		return this, err
 	}
 	this.size = fi.Size()
 	this.mode = fi.Mode().String()
 	this.modTime = fi.ModTime()
 	this.isDir = fi.IsDir()
-	this.dataType = this.getDataType()
-	return this
+	this.dataType = this.SetDataType()
+	return this, nil
 }
 
 func (this *File) getFilePath(fullname string) {
@@ -54,7 +54,7 @@ func (this *File) getFilePath(fullname string) {
 	this.fileAbs = fileAbs
 }
 
-func (this *File) getDataType() (dataType int) {
+func (this *File) SetDataType() (dataType int) {
 	fileSuffix := path.Ext(this.name)
 	switch fileSuffix {
 	case IniSuffix:
@@ -68,7 +68,9 @@ func (this *File) getDataType() (dataType int) {
 	}
 	return
 }
-
+func (this *File) GetDataType() int {
+	return this.dataType
+}
 func (this *File) GetContent() []*TreeStruct {
 	return this.content
 }
@@ -97,12 +99,13 @@ func (this *File) checkFileExist(filename string) bool {
 	return exist
 }
 
-func FileInstance(name string) *File {
+func FileInstance(name string) (*File, error) {
 	fileObj := &File{}
 	fileObj.getFilePath(name)
-	fileObj = fileObj.fileInfo()
+	fileObj, err := fileObj.fileInfo()
+
 	if fileObj.isDir {
-		return nil
+		return nil, fmt.Errorf("file is dir")
 	}
-	return fileObj
+	return fileObj, err
 }

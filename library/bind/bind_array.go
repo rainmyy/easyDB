@@ -1,6 +1,8 @@
 package bind
 
 import (
+	"fmt"
+
 	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
@@ -61,12 +63,23 @@ func (a *Array) Bind(treeList []*TreeStruct) {
 	}
 	treeMapList = getBindMap(treeList)
 	a.value = treeMapList
+	a.length = len(a.value)
 }
 
 func (a *Array) GetValue() interface{} {
 	return a.value
 }
 
-func (a *Array) UnBind() []*TreeStruct {
-	return nil
+func (a *Array) SetMap(m map[string]interface{}) {
+	a.value = append(a.value, m)
+	a.length = len(a.value)
+}
+
+func (a *Array) UnBind() ([]*TreeStruct, error) {
+	arr := a.value
+	if arr == nil {
+		return nil, fmt.Errorf("array value is nil")
+	}
+
+	return nil, nil
 }

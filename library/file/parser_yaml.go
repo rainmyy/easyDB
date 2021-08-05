@@ -3,6 +3,7 @@ package file
 import (
 	"log"
 
+	. "github.com/rainmyy/easyDB/library/bind"
 	. "github.com/rainmyy/easyDB/library/strategy"
 	"gopkg.in/yaml.v2"
 )
@@ -15,5 +16,7 @@ func ParserYamlContent(data []byte) ([]*TreeStruct, error) {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	return nil, nil
+	array := ArrayInterface()
+	array.SetMap(result)
+	return array.UnBind()
 }

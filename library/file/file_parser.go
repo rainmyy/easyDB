@@ -79,7 +79,7 @@ func (this *File) readFileByConcurrent(fileObj *os.File) error {
 * 所有的数
  */
 func parserDataFunc(file *File, data []byte) ([]*TreeStruct, error) {
-	var objType = file.getDataType()
+	var objType = file.GetDataType()
 	switch objType {
 	case IniType:
 		return ParserIniContent(data)
