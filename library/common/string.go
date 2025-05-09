@@ -2,6 +2,8 @@ package common
 
 import (
 	"reflect"
+	"strconv"
+	"strings"
 	"unsafe"
 )
 
@@ -35,4 +37,25 @@ func Bytes2string(b []byte) string {
 	}
 
 	return *(*string)(unsafe.Pointer(&sh))
+}
+
+// VBEncode variable byte
+func VBEncode(n uint32) string {
+	var bytes []uint32
+	for {
+		bytes = append(bytes, (n+1)%128)
+		if n < 128 {
+			break
+		}
+		n /= 128
+	}
+	var by []string
+	for i := len(bytes) - 1; i >= 0; i-- {
+		if i < len(bytes)-1 {
+			by = append(by, strconv.FormatUint(uint64(bytes[i]), 2)[1:]+" ")
+		} else {
+			by = append(by, strconv.FormatUint(uint64(bytes[i]), 2))
+		}
+	}
+	return strings.Join(by, "")
 }
