@@ -1,4 +1,4 @@
-package strategy
+package collect
 
 import (
 	"sync"
@@ -25,7 +25,7 @@ func ListInstance() *ListObj {
 	return &ListObj{mutex: new(sync.RWMutex)}
 }
 
-//尾部压入数据
+// 尾部压入数据
 func (this *ListObj) Append(data interface{}) bool {
 	if data == nil {
 		return false

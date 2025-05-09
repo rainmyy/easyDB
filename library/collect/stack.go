@@ -1,4 +1,4 @@
-package strategy
+package collect
 
 const treVal = 0.75
 
