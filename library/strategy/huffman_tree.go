@@ -78,12 +78,3 @@ func (hum *HuffmanTree) Traversal() {
 	hum.Left.Traversal()
 	hum.Right.Traversal()
 }
-
-func (hum *HuffmanTree) Traversal1() {
-	if hum == nil {
-		return
-	}
-	hum.Left.Traversal()
-	fmt.Print("%v\t", hum.Weight)
-	hum.Right.Traversal()
-}

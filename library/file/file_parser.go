@@ -3,6 +3,7 @@ package file
 import (
 	"bufio"
 	"fmt"
+	"github.com/rainmyy/easyDB/library/json"
 	"io"
 	"math"
 	"os"
@@ -44,7 +45,7 @@ func (this *File) readFile() error {
 		fileSize = fiStat.Size()
 	}
 	//if the file larger than 1GB,concurrently read and parse files
-	if fileSize > defaultSize {
+	if fileSize > defaultSize && this.dataType == DataType {
 		return this.readFileByConcurrent(fi)
 	} else {
 		return this.readFileByGeneral(fi)
@@ -170,7 +171,7 @@ func parserDataFunc(file *File, data []byte) ([]*TreeStruct, error) {
 	case YamlType:
 		return ParserYamlContent(data)
 	case JsonType:
-		return ParserJsonContent(data)
+		return json.ParserJsonContent(data)
 	default:
 		return ParserContent(data)
 	}
