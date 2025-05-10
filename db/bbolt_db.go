@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-var NoDataErr = errors.New("no data")
-
 type BBoltDB struct {
 	db     *bbolt.DB
 	path   string

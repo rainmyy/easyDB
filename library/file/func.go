@@ -11,10 +11,3 @@ func InIntSliceSortedFunc(stack []int) func(int) bool {
 		return index < len(stack) && stack[index] == needle
 	}
 }
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}

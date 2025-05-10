@@ -10,11 +10,10 @@ func TestAppend(t *testing.T) {
 		testData = []interface{}{
 			1, "a", []int{1, 3},
 		}
-		expected = true
 	)
 	for i := 0; i < len(testData); i++ {
 		actual := listobj.Append(testData[i])
-		if actual != expected {
+		if actual != true {
 			t.Errorf("append is wrong")
 		}
 	}

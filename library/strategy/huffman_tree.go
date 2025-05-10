@@ -10,6 +10,7 @@ type MiniHeap struct {
 type HuffmanTree struct {
 	Left, Right *HuffmanTree
 	Weight      int64
+	Value       int64
 }
 
 func NewMinHeap() *MiniHeap {
@@ -19,6 +20,13 @@ func NewMinHeap() *MiniHeap {
 	}
 	h.Heap[0] = &HuffmanTree{}
 	return h
+}
+func (minH *MiniHeap) Less(i, j int) bool {
+	return minH.Heap[i].Weight < minH.Heap[j].Weight
+}
+
+func (minH MiniHeap) Swap(i, j int) {
+	minH.Heap[i], minH.Heap[j] = minH.Heap[j], minH.Heap[i]
 }
 
 func (minH *MiniHeap) Insert(item *HuffmanTree) {
@@ -74,7 +82,7 @@ func (hum *HuffmanTree) Traversal() {
 	if hum == nil {
 		return
 	}
-	fmt.Print("%v\t", hum.Weight)
+	fmt.Printf("%v\t", hum.Weight)
 	hum.Left.Traversal()
 	hum.Right.Traversal()
 }

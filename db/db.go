@@ -18,6 +18,12 @@ type KvDb interface {
 	TotalKey(f func(k []byte) error) (int64, error)
 }
 
+const (
+	BOLT = iota
+	BADGER
+	FILE
+)
+
 func GetDb(dbType int, path string, bucket string) (KvDb, error) {
 	pathList := strings.Split(path, "/")
 	parentPath := strings.Join(pathList[:len(pathList)-1], "/")
@@ -39,7 +45,10 @@ func GetDb(dbType int, path string, bucket string) (KvDb, error) {
 	}
 	var db KvDb
 	switch dbType {
-	case 1:
+	case BOLT:
+		db = new(BBoltDB).NewInstance(path, bucket)
+	case BADGER:
+		db = new(BadgerDB).NewInstance(path, 1, ERROR, 0.5)
 	default:
 		db = new(BBoltDB).NewInstance(path, bucket)
 	}

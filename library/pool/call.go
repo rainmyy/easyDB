@@ -26,8 +26,8 @@ func FuncCall(function interface{}, args ...interface{}) []interface{} {
 		parameters = append(parameters, arg)
 	}
 	if value.Type().NumIn() != len(args) {
-		erroMsg := fmt.Sprintf("argument %d length doesn't equal to provide length %d \n", value.Type().NumIn(), len(args))
-		return result(erroMsg)
+		errorMsg := fmt.Sprintf("argument %d length doesn't equal to provide length %d \n", value.Type().NumIn(), len(args))
+		return result(errorMsg)
 	}
 	outs := make([]reflect.Type, 0, value.Type().NumOut())
 	for i := 0; i < value.Type().NumOut(); i++ {

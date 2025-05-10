@@ -58,25 +58,25 @@ func (q *Queue) CallBackInit(name string, function interface{}, params ...interf
 	q.CallBack = callBackFunc
 	return q
 }
-func (this *Pool) Init(runtineNumber, total int) *Pool {
-	this.RuntineNumber = runtineNumber
-	this.Total = total
-	this.taskQuery = make(chan *Queue, runtineNumber)
-	this.taskResult = make(chan map[string]*Response, runtineNumber)
-	this.taskResponse = make(map[string]*Response)
-	return this
+func (p *Pool) Init(runtimeNumber, total int) *Pool {
+	p.RuntineNumber = runtimeNumber
+	p.Total = total
+	p.taskQuery = make(chan *Queue, runtimeNumber)
+	p.taskResult = make(chan map[string]*Response, runtimeNumber)
+	p.taskResponse = make(map[string]*Response)
+	return p
 }
-func (this *Pool) Start() {
-	runtineNumber := this.RuntineNumber
-	if len(this.taskQuery) != runtineNumber {
-		runtineNumber = len(this.taskQuery)
+func (p *Pool) Start() {
+	runtimeNumber := p.RuntineNumber
+	if len(p.taskQuery) != runtimeNumber {
+		runtimeNumber = len(p.taskQuery)
 	}
 	var mutex sync.WaitGroup
-	for i := 0; i < runtineNumber; i++ {
+	for i := 0; i < runtimeNumber; i++ {
 		mutex.Add(1)
 		go func(num int) {
 			defer mutex.Done()
-			task, ok := <-this.taskQuery
+			task, ok := <-p.taskQuery
 			taskName := task.Name
 			result := map[string]*Response{
 				taskName: nil,
@@ -86,7 +86,7 @@ func (this *Pool) Start() {
 				res := ResultInstance().ErrorParamsResult()
 				response.Result = res
 				result[taskName] = response
-				this.taskResult <- result
+				p.taskResult <- result
 				return
 			}
 			task.excelQuery()
@@ -95,35 +95,35 @@ func (this *Pool) Start() {
 				res := ResultInstance().EmptyResult()
 				response.Result = res
 				result[taskName] = response
-				this.taskResult <- result
+				p.taskResult <- result
 				return
 			}
 			result = map[string]*Response{
 				taskName: taskResult,
 			}
-			this.taskResult <- result
+			p.taskResult <- result
 		}(i)
 	}
 	mutex.Wait()
-	for i := 0; i < runtineNumber; i++ {
-		if result, ok := <-this.taskResult; ok {
+	for i := 0; i < runtimeNumber; i++ {
+		if result, ok := <-p.taskResult; ok {
 			for name, value := range result {
-				this.taskResponse[name] = value
+				p.taskResponse[name] = value
 			}
 		}
 	}
 }
 
-func (this *Pool) TaskResult() map[string]*Response {
-	return this.taskResponse
+func (p *Pool) TaskResult() map[string]*Response {
+	return p.taskResponse
 }
 
-func (this *Pool) Stop() {
-	close(this.taskResult)
+func (p *Pool) Stop() {
+	close(p.taskResult)
 }
 
-func (this *Pool) AddTask(task *Queue) {
-	this.taskQuery <- task
+func (p *Pool) AddTask(task *Queue) {
+	p.taskQuery <- task
 }
 
 /**

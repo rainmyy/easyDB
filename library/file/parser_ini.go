@@ -94,7 +94,7 @@ func initTreeFunc(bytesList [][]byte) []*TreeStruct {
 
 			currentTree = treeStruct
 		} else if tempNum == 0 {
-			//type of key:vaule
+			//type of key:value
 			separatorPlace := SlicePlace(byte(Colon), bytes)
 			if separatorPlace <= 0 {
 				continue

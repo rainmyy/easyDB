@@ -4,10 +4,7 @@ import (
 	"sync"
 )
 
-/***
-*双向链表
- */
-
+// Node 双向链表
 type Node struct {
 	data interface{}
 	prev *Node
@@ -25,48 +22,48 @@ func ListInstance() *ListObj {
 	return &ListObj{mutex: new(sync.RWMutex)}
 }
 
-// 尾部压入数据
-func (this *ListObj) Append(data interface{}) bool {
+// Append 尾部压入数据
+func (o *ListObj) Append(data interface{}) bool {
 	if data == nil {
 		return false
 	}
-	this.mutex.Lock()
-	defer this.mutex.Unlock()
+	o.mutex.Lock()
+	defer o.mutex.Unlock()
 	var node = new(Node)
 	node.data = data
-	if this.length == 0 {
-		this.head = node
-		this.tail = node
-		this.length = 1
+	if o.length == 0 {
+		o.head = node
+		o.tail = node
+		o.length = 1
 		return true
 	}
-	tail := this.tail
+	tail := o.tail
 	node.prev = tail
 	tail.next = node
-	this.tail = node
-	this.length += 1
+	o.tail = node
+	o.length += 1
 	return true
 }
 
-func (this *ListObj) Insert(index uint, data interface{}) bool {
+func (o *ListObj) Insert(index uint, data interface{}) bool {
 	if data == nil {
 		return false
 	}
-	if index > this.length {
+	if index > o.length {
 		return false
 	}
-	this.mutex.Lock()
-	defer this.mutex.Unlock()
+	o.mutex.Lock()
+	defer o.mutex.Unlock()
 	var node = new(Node)
 	if index == 0 {
-		node.next = this.head
-		this.head.prev = node
-		this.head = node
-		this.length += 1
+		node.next = o.head
+		o.head.prev = node
+		o.head = node
+		o.length += 1
 		return true
 	}
 	var i uint
-	ptr := this.head
+	ptr := o.head
 	for i = 1; i < index; i++ {
 		ptr = ptr.next
 	}
@@ -75,28 +72,28 @@ func (this *ListObj) Insert(index uint, data interface{}) bool {
 	node.prev = ptr
 	next.prev = node
 	node.next = next
-	this.length += 1
+	o.length += 1
 	return true
 }
 
-func (this *ListObj) Delete(index uint) bool {
-	if this == nil || index > this.length-1 {
+func (o *ListObj) Delete(index uint) bool {
+	if o == nil || index > o.length-1 {
 		return false
 	}
 
-	this.mutex.Lock()
-	defer this.mutex.Unlock()
+	o.mutex.Lock()
+	defer o.mutex.Unlock()
 	if index == 0 {
-		head := this.head.next
-		this.head = head
-		this.head.prev = nil
-		if this.length == 1 {
-			this.tail = nil
+		head := o.head.next
+		o.head = head
+		o.head.prev = nil
+		if o.length == 1 {
+			o.tail = nil
 		}
-		this.length -= 1
+		o.length -= 1
 		return true
 	}
-	ptr := this.head
+	ptr := o.head
 	var i uint
 	for i = 1; i < index; i++ {
 		ptr = ptr.next
@@ -104,39 +101,37 @@ func (this *ListObj) Delete(index uint) bool {
 	next := ptr.next
 	ptr.next = next.next
 	next.next.prev = ptr
-	if index == this.length-1 {
-		this.tail = ptr
+	if index == o.length-1 {
+		o.tail = ptr
 	}
-	this.length -= 1
+	o.length -= 1
 	return true
 }
 
-func (this *ListObj) Get(index uint) *Node {
-	if this == nil || index > this.length-1 {
+func (o *ListObj) Get(index uint) *Node {
+	if o == nil || index > o.length-1 {
 		return nil
 	}
-	this.mutex.RLock()
-	defer this.mutex.RUnlock()
-	node := this.head
+	o.mutex.RLock()
+	defer o.mutex.RUnlock()
+	node := o.head
 	for i := 0; i < int(index); i++ {
 		node = node.next
 	}
 	return node
 }
 
-/**
-* 查找链表中的元素
- */
-func (this *ListObj) Find(data interface{}) *Node {
-	if this == nil {
+// Find /
+func (o *ListObj) Find(data interface{}) *Node {
+	if o == nil {
 		return nil
 	}
-	this.mutex.RLock()
-	defer this.mutex.RUnlock()
-	head := this.head
-	tail := this.tail
+	o.mutex.RLock()
+	defer o.mutex.RUnlock()
+	head := o.head
+	tail := o.tail
 	var start uint = 0
-	var end uint = this.length - 1
+	var end uint = o.length - 1
 	for start != end {
 		if head.data == data {
 			return head

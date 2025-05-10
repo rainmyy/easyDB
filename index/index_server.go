@@ -15,9 +15,14 @@ type IndexServer struct {
 	maxIntId     uint64
 }
 
-func (is IndexServer) NewIndexServer(docNumEstimate int, dbType int, dbDir string) error {
+func (is IndexServer) NewIndexServer(docNumEstimate int, dbType int, bucket, dbDir string) error {
+	kvDb, err := db.GetDb(dbType, dbDir, bucket)
+	if err != nil {
+		return err
+	}
 	reIndex := NewSkipListInvertedIndex(docNumEstimate)
 	is.reverseIndex = reIndex
+	is.db = kvDb
 	return nil
 }
 
@@ -131,6 +136,6 @@ func (is *IndexServer) Total() int {
 	if err != nil {
 		return 0
 	}
-	
+
 	return int(n)
 }

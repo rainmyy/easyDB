@@ -9,15 +9,15 @@ import (
 	. "github.com/rainmyy/easyDB/library/file"
 )
 
-// DeafultConf /**
-type DeafultConf struct {
+// DefaultConf /**
+type DefaultConf struct {
 	m     *sync.RWMutex
 	Key   string         `bind:"must"`
 	Name  string         `bind:"should"`
-	Child []*DeafultConf `bind:"must"`
+	Child []*DefaultConf `bind:"must"`
 }
 
-func (conf *DeafultConf) Init() *DeafultConf {
+func (conf *DefaultConf) Init() *DefaultConf {
 	confName := "./conf/idc/bj/service.yaml"
 	fileObj, err := Instance(confName)
 	if err != nil {
@@ -40,6 +40,6 @@ func (conf *DeafultConf) Init() *DeafultConf {
 	return conf
 }
 
-func Intance() *DeafultConf {
-	return new(DeafultConf)
+func Intance() *DefaultConf {
+	return new(DefaultConf)
 }
