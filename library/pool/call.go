@@ -67,8 +67,8 @@ func FuncCall(function interface{}, args ...interface{}) []interface{} {
 	return resultList
 }
 
-func FormatResult(resultList []interface{}) *Reponse {
-	var response = new(Reponse)
+func FormatResult(resultList []interface{}) *Response {
+	var response = new(Response)
 	for _, result := range resultList {
 		if result == nil {
 			continue

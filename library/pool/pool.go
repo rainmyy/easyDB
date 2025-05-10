@@ -16,16 +16,17 @@ type Pool struct {
 	RuntineNumber int
 	Total         int
 	taskQuery     chan *Queue
-	taskResult    chan map[string]*Reponse
-	taskResponse  map[string]*Reponse
+	taskResult    chan map[string]*Response
+	taskResponse  map[string]*Response
 }
 
-/**
+/*
+*
 执行队列
 */
 type Queue struct {
 	Name     string
-	result   chan *Reponse
+	result   chan *Response
 	Excel    *ExcelFunc
 	CallBack *CallBackFunc
 }
@@ -47,7 +48,7 @@ func QueryInit(name string, function interface{}, params ...interface{}) *Queue 
 	excelFunc := &ExcelFunc{Function: function, Params: params}
 	query := &Queue{Name: name,
 		Excel:  excelFunc,
-		result: make(chan *Reponse, 1),
+		result: make(chan *Response, 1),
 	}
 	return query
 }
@@ -61,8 +62,8 @@ func (this *Pool) Init(runtineNumber, total int) *Pool {
 	this.RuntineNumber = runtineNumber
 	this.Total = total
 	this.taskQuery = make(chan *Queue, runtineNumber)
-	this.taskResult = make(chan map[string]*Reponse, runtineNumber)
-	this.taskResponse = make(map[string]*Reponse)
+	this.taskResult = make(chan map[string]*Response, runtineNumber)
+	this.taskResponse = make(map[string]*Response)
 	return this
 }
 func (this *Pool) Start() {
@@ -77,10 +78,10 @@ func (this *Pool) Start() {
 			defer mutex.Done()
 			task, ok := <-this.taskQuery
 			taskName := task.Name
-			result := map[string]*Reponse{
+			result := map[string]*Response{
 				taskName: nil,
 			}
-			response := ReponseIntance()
+			response := ReposeInstance()
 			if !ok {
 				res := ResultInstance().ErrorParamsResult()
 				response.Result = res
@@ -97,7 +98,7 @@ func (this *Pool) Start() {
 				this.taskResult <- result
 				return
 			}
-			result = map[string]*Reponse{
+			result = map[string]*Response{
 				taskName: taskResult,
 			}
 			this.taskResult <- result
@@ -113,7 +114,7 @@ func (this *Pool) Start() {
 	}
 }
 
-func (this *Pool) TaskResult() map[string]*Reponse {
+func (this *Pool) TaskResult() map[string]*Response {
 	return this.taskResponse
 }
 
@@ -165,7 +166,7 @@ func (qeury *Queue) excelQuery() {
 		callBackChannel <- result
 	}()
 	resultList, ok := <-callBackChannel
-	if !ok && response != nil {
+	if !ok {
 		qeury.result <- response
 		return
 	}

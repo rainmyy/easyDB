@@ -32,8 +32,8 @@ func (e *Element) Next() *Element {
 	}
 	return nil
 }
-func (elem *Element) Key() interface{} {
-	return elem.key
+func (e *Element) Key() interface{} {
+	return e.key
 }
 func NewSkipList() *SkipList {
 	return &SkipList{

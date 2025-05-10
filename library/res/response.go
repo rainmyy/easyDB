@@ -1,21 +1,21 @@
 package res
 
-type Reponse struct {
+type Response struct {
 	Name     string
 	Result   *Result
 	Callback *Result
 	//res      Result
 }
 
-func ReponseIntance() *Reponse {
-	return new(Reponse)
+func ReposeInstance() *Response {
+	return new(Response)
 }
 
-func (this *Reponse) ErrorMsg(tag, errcode int, errmsg error) {
+func (r *Response) ErrorMsg(tag, errcode int, errmsg error) {
 	result := ResultInstance().SetResult(errcode, errmsg, "")
 	if tag == 1 {
-		this.Result = result
+		r.Result = result
 	} else if tag == 2 {
-		this.Callback = result
+		r.Callback = result
 	}
 }

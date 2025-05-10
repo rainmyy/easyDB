@@ -72,7 +72,6 @@ func (index *SkipListInvertedIndex) Add(doc Document) {
 			list.Insert(doc.FloatId, skipListValue)
 		} else {
 			list := strategy.NewSkipList()
-			//New(skiplist.Uint64)
 			list.Insert(doc.FloatId, skipListValue)
 			index.table.Set(key, list)
 		}
@@ -137,20 +136,20 @@ func (index *SkipListInvertedIndex) searchQuery(query *TermQuery, onFlag uint64,
 		for _, q := range query.Must {
 			results = append(results, index.searchQuery(q, offFlag, offFlag, orFlags))
 		}
-		return index.InersectionList(results...)
+		return index.IntersectionList(results...)
 	case len(query.Should) > 0:
 		results := make([]*strategy.SkipList, 0, len(query.Should))
 		for _, q := range query.Should {
 			results = append(results, index.searchQuery(q, offFlag, offFlag, orFlags))
 		}
 
-		return index.InersectionList(results...)
+		return index.IntersectionList(results...)
 	}
 
 	return nil
 }
 
-func (index SkipListInvertedIndex) FilterBits(bits, onFlag, offFlag uint64, orFlags []uint64) bool {
+func (index *SkipListInvertedIndex) FilterBits(bits, onFlag, offFlag uint64, orFlags []uint64) bool {
 	if bits&onFlag != onFlag {
 		return false
 	}
@@ -166,7 +165,7 @@ func (index SkipListInvertedIndex) FilterBits(bits, onFlag, offFlag uint64, orFl
 	return true
 }
 
-func (index SkipListInvertedIndex) InersectionList(lists ...*strategy.SkipList) *strategy.SkipList {
+func (index *SkipListInvertedIndex) IntersectionList(lists ...*strategy.SkipList) *strategy.SkipList {
 	if len(lists) == 0 {
 		return nil
 	}

@@ -18,8 +18,8 @@ import (
 /**
 * 解析数据，将数据解析成树形结构进行存储
  */
-func (this *File) Parser(objType int) error {
-	err := this.readFile()
+func (f *File) Parser(objType int) error {
+	err := f.readFile()
 	if err != nil {
 		return err
 	}
@@ -29,14 +29,14 @@ func (this *File) Parser(objType int) error {
 // file size 1GB
 var defaultSize int64 = 1 << 30
 
-func (this *File) readFile() error {
-	fileName := this.fileAbs
+func (f *File) readFile() error {
+	fileName := f.fileAbs
 	fi, err := os.Open(fileName)
 	defer fi.Close()
 	if err != nil {
 		return err
 	}
-	fileSize := this.size
+	fileSize := f.size
 	if fileSize == 0 {
 		fiStat, err := fi.Stat()
 		if err != nil {
@@ -45,37 +45,37 @@ func (this *File) readFile() error {
 		fileSize = fiStat.Size()
 	}
 	//if the file larger than 1GB,concurrently read and parse files
-	if fileSize > defaultSize && this.dataType == DataType {
-		return this.readFileByConcurrent(fi)
+	if fileSize > defaultSize && f.dataType == DataType {
+		return f.readFileByConcurrent(fi)
 	} else {
-		return this.readFileByGeneral(fi)
+		return f.readFileByGeneral(fi)
 	}
 }
 
-func (this *File) readFileByGeneral(fileObj *os.File) error {
+func (f *File) readFileByGeneral(fileObj *os.File) error {
 	if fileObj == nil {
 		return fmt.Errorf("file is nil")
 	}
 	r := bufio.NewReader(fileObj)
-	b := make([]byte, this.size)
+	b := make([]byte, f.size)
 	for {
 		_, err := r.Read(b)
 		if err != nil && err == io.EOF {
 			break
 		}
 	}
-	tree, err := parserDataFunc(this, b)
+	tree, err := parserDataFunc(f, b)
 	if err != nil {
 		return err
 	}
-	this.content = tree
+	f.content = tree
 	return nil
 }
 
 /**
 * 并发读取,所有字符串按行分割， 暂不支持多行关联行数据
  */
-func (this *File) readFileByConcurrent(fileObj *os.File) error {
+func (f *File) readFileByConcurrent(fileObj *os.File) error {
 	liensPool := sync.Pool{New: func() interface{} {
 		lines := make([]byte, 500*1024)
 		return lines
