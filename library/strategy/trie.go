@@ -2,27 +2,27 @@ package strategy
 
 import "fmt"
 
-type trideNode struct {
+type TriedNode struct {
 	char     string
 	isEnding bool
-	children map[rune]*trideNode
+	children map[rune]*TriedNode
 }
 
-func NewTrieNode(char string) *trideNode {
-	return &trideNode{
+func NewTrieNode(char string) *TriedNode {
+	return &TriedNode{
 		char:     char,
 		isEnding: false,
-		children: make(map[rune]*trideNode),
+		children: make(map[rune]*TriedNode),
 	}
 }
 
 type Trie struct {
-	root *trideNode
+	root *TriedNode
 }
 
 func NewTrie() *Trie {
-	trideNode := NewTrieNode("/")
-	return &Trie{trideNode}
+	triedNode := NewTrieNode("/")
+	return &Trie{triedNode}
 }
 
 func (t *Trie) Insert(word string) {

@@ -29,11 +29,9 @@ const (
 var SERVICELEN = 4
 var pool = PoolLib.GetInstance()
 
-/**
-*注册执行函数,默认开启rpc服务、tcp服务、数据读服务、数据写服务
- */
+// Setup /**
 func (app *AppServer) Setup() {
-	_ = conf.ConfIntance().Init()
+	_ = conf.Intance().Init()
 	//注册执行函数
 	pool := pool.Init(SERVICELEN, SERVICELEN)
 	for i := 0; i < SERVICELEN; i++ {

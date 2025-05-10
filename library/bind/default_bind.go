@@ -5,17 +5,13 @@ import (
 )
 
 type Binder interface {
-	/**
-	* bind the tree list to object data
-	 */
+	// Bind /**
 	Bind(treeList []*TreeStruct)
 	UnBind() []*TreeStruct
 	GetValue() interface{}
 }
 
-/**
-* 绑定实体和参数
- */
+// DefaultBind /**
 func DefaultBind(tree []*TreeStruct, obj Binder) interface{} {
 	obj.Bind(tree)
 	bindData := obj.GetValue()

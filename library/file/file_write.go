@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-func (this *File) BackupFile(dstFile string) (res int64, err error) {
-	src, err := os.Open(this.name)
+func (f *File) BackupFile(dstFile string) (res int64, err error) {
+	src, err := os.Open(f.name)
 	if err != nil {
 		return
 	}

@@ -9,9 +9,9 @@ import (
 
 func FuncCall(function interface{}, args ...interface{}) []interface{} {
 	var resultList = make([]interface{}, 0)
-	result := func(erroMsg string) []interface{} {
+	result := func(errMsg string) []interface{} {
 		result := ResultInstance()
-		err := fmt.Errorf(erroMsg)
+		err := fmt.Errorf(errMsg)
 		result.SetResult(-1, err, "")
 		resultList = append(resultList, result)
 		return resultList
@@ -37,25 +37,25 @@ func FuncCall(function interface{}, args ...interface{}) []interface{} {
 	var argValues []reflect.Value
 	for i := 0; i < len(args); i++ {
 		switch parameters[i] {
-		case reflect.TypeOf(int(0)):
+		case reflect.TypeOf(0):
 			argValues = append(argValues, reflect.ValueOf(args[i].(int)))
-		case reflect.TypeOf(bool(false)):
+		case reflect.TypeOf(false):
 			argValues = append(argValues, reflect.ValueOf(args[i].(bool)))
 		case reflect.TypeOf(int16(0)):
 			argValues = append(argValues, reflect.ValueOf(args[i].(int16)))
-		case reflect.TypeOf(string("")):
+		case reflect.TypeOf(""):
 			argValues = append(argValues, reflect.ValueOf(args[i].(string)))
 		default:
-			erroMsg := fmt.Sprintf("unsupport type %s[%s] \n", parameters[i].Kind(), parameters[i].Name())
-			return result(erroMsg)
+			errMsg := fmt.Sprintf("unsupport type %s[%s] \n", parameters[i].Kind(), parameters[i].Name())
+			return result(errMsg)
 		}
 	}
 	resultValue := value.Call(argValues)
 	for i := 0; i < len(resultValue); i++ {
 		switch resultValue[i].Type() {
-		case reflect.TypeOf(int(0)):
+		case reflect.TypeOf(0):
 			resultList = append(resultList, resultValue[i].Interface().(int))
-		case reflect.TypeOf(string("")):
+		case reflect.TypeOf(""):
 			resultList = append(resultList, resultValue[i].Interface().(string))
 		default:
 			resultList = append(resultList, resultValue[i].Interface().(*Result))
@@ -69,16 +69,16 @@ func FuncCall(function interface{}, args ...interface{}) []interface{} {
 
 func FormatResult(resultList []interface{}) *Reponse {
 	var response = new(Reponse)
-	for _, reuslt := range resultList {
-		if reuslt == nil {
+	for _, result := range resultList {
+		if result == nil {
 			continue
 		}
-		switch reuslt.(type) {
+		switch result.(type) {
 		case *Result:
-			response.Result = reuslt.(*Result)
+			response.Result = result.(*Result)
 		case int:
 			//退出标志
-			if reuslt.(int) == -1 {
+			if result.(int) == -1 {
 				return nil
 			}
 		}

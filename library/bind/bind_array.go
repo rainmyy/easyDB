@@ -15,9 +15,7 @@ func ArrayInterface() *Array {
 	return &Array{value: make([]map[string]interface{}, 0)}
 }
 
-/**
-* 获取数据树的map和slice
- */
+// Bind /**
 func (a *Array) Bind(treeList []*TreeStruct) {
 	var treeMapList = make([]map[string]interface{}, 0)
 	var getBindMap func(tree []*TreeStruct) []map[string]interface{}

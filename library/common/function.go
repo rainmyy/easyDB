@@ -14,9 +14,7 @@ func SlicePlace(find byte, slice []byte) int {
 	return 0
 }
 
-/**
-* cut slice, turn the one dimensional silce to double dimensional slice
- */
+// SplitSlice /**
 func SplitSlice(num int, a []string) [][]string {
 	var sli [][]string
 	var slilen = 0

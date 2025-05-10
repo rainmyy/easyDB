@@ -9,32 +9,32 @@ type Stack struct {
 func StackInstance() *Stack {
 	return &Stack{new(ListObj)}
 }
-func (this *Stack) Len() int {
-	return int(this.list.length)
+func (s *Stack) Len() int {
+	return int(s.list.length)
 }
-func (this *Stack) Peek() interface{} {
-	if this.Len() == 0 {
+func (s *Stack) Peek() interface{} {
+	if s.Len() == 0 {
 		return nil
 	}
-	return this.list.head
+	return s.list.head
 }
 
-func (this *Stack) Pop() interface{} {
-	if this.Len() == 0 {
+func (s *Stack) Pop() interface{} {
+	if s.Len() == 0 {
 		return nil
 	}
-	value := this.list.head
-	result := this.list.Delete(0)
+	value := s.list.head
+	result := s.list.Delete(0)
 	if !result {
 		return nil
 	}
 	return value
 }
 
-func (this *Stack) Push(value interface{}) bool {
+func (s *Stack) Push(value interface{}) bool {
 	if value == nil {
 		return false
 	}
-	result := this.list.Insert(0, value)
+	result := s.list.Insert(0, value)
 	return result
 }

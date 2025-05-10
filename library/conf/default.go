@@ -9,9 +9,7 @@ import (
 	. "github.com/rainmyy/easyDB/library/file"
 )
 
-/**
-* 获取配置信息，默认获取获取default日志,配置文件bind级别分为must,should,must是必须参数，should是非必须参数，不配置则不判断bind
- */
+// DeafultConf /**
 type DeafultConf struct {
 	m     *sync.RWMutex
 	Key   string         `bind:"must"`
@@ -21,16 +19,18 @@ type DeafultConf struct {
 
 func (conf *DeafultConf) Init() *DeafultConf {
 	confName := "./conf/idc/bj/service.yaml"
-	fileObj, err := FileInstance(confName)
+	fileObj, err := Instance(confName)
 	if err != nil {
 		fmt.Print(err.Error())
 		return nil
 	}
+
 	err = fileObj.Parser(IniType)
 	if err != nil {
 		print(err.Error())
 		return nil
 	}
+
 	str := StrigInstance()
 	//array := ArrayInterface()
 	bindData := DefaultBind(fileObj.GetContent(), str)
@@ -40,6 +40,6 @@ func (conf *DeafultConf) Init() *DeafultConf {
 	return conf
 }
 
-func ConfIntance() *DeafultConf {
+func Intance() *DeafultConf {
 	return new(DeafultConf)
 }

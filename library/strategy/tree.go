@@ -32,88 +32,86 @@ type NodeStruct struct {
 	backup []byte
 }
 
-func (this *TreeStruct) GetNode() []*NodeStruct {
-	if this.node == nil {
+func (s *TreeStruct) GetNode() []*NodeStruct {
+	if s.node == nil {
 		return nil
 	}
-	return this.node
+	return s.node
 }
 
-func (this *TreeStruct) SetNode(node *NodeStruct) *TreeStruct {
+func (s *TreeStruct) SetNode(node *NodeStruct) *TreeStruct {
 	if node == nil {
-		return this
+		return s
 	}
-	this.node = append(this.node, node)
+	s.node = append(s.node, node)
 	if len(node.data) > 0 {
-		this.leaf = true
+		s.leaf = true
 	}
-	return this
+	return s
 }
 
-func (this *TreeStruct) GetChildren() []*TreeStruct {
-	if this.children == nil {
+func (s *TreeStruct) GetChildren() []*TreeStruct {
+	if s.children == nil {
 		return nil
 	}
-	return this.children
+	return s.children
 }
 
-func (this *TreeStruct) SetChildren(children *TreeStruct) *TreeStruct {
+func (s *TreeStruct) SetChildren(children *TreeStruct) *TreeStruct {
 	if children == nil {
-		return this
+		return s
 	}
-	children.SetParent(this)
-	children.SetHight(this.high + 1)
-	this.children = append(this.children, children)
-	for _, val := range this.children {
+	children.SetParent(s)
+	children.SetHeight(s.high + 1)
+	s.children = append(s.children, children)
+	for _, val := range s.children {
 		if val.IsLeaf() == true {
-			this.childLeafNum++
+			s.childLeafNum++
 		}
 	}
-	return this
+	return s
 }
 
-/**
-*last node data
- */
-func (this *TreeStruct) GetParent() *TreeStruct {
-	if this.parent == nil {
-		return this
+// GetParent /**
+func (s *TreeStruct) GetParent() *TreeStruct {
+	if s.parent == nil {
+		return s
 	}
-	return this.parent
+	return s.parent
 }
 
-func (this *TreeStruct) SetParent(tree *TreeStruct) *TreeStruct {
+func (s *TreeStruct) SetParent(tree *TreeStruct) *TreeStruct {
 	if tree == nil {
-		return this
+		return s
 	}
-	this.parent = tree
-	return this
+	s.parent = tree
+	return s
 }
 
-func (this *TreeStruct) GetRoot() *TreeStruct {
-	if this.IsRoot() == true {
-		return this
+func (s *TreeStruct) GetRoot() *TreeStruct {
+	if s.IsRoot() == true {
+		return s
 	}
-	for this.parent != nil {
-		this = this.parent
+	for s.parent != nil {
+		s = s.parent
 	}
-	return this
+	return s
 }
 
-func (this *TreeStruct) GetHight() int {
-	return this.high
+func (s *TreeStruct) GetHeight() int {
+	return s.high
 }
 
-func (this *TreeStruct) SetHight(hight int) *TreeStruct {
-	this.high = hight
-	return this
+func (s *TreeStruct) SetHeight(height int) *TreeStruct {
+	s.high = height
+	return s
 }
 
-func (this *TreeStruct) IsLeaf() bool {
-	return this.leaf
+func (s *TreeStruct) IsLeaf() bool {
+	return s.leaf
 }
-func (this *TreeStruct) IsRoot() bool {
-	if this.parent != nil {
+func (s *TreeStruct) IsRoot() bool {
+	if s.parent != nil {
 		return false
 	}
 	return true
@@ -127,23 +125,23 @@ func TreeInstance() *TreeStruct {
 	}
 }
 
-func (this *NodeStruct) UpdateData(value []byte) *NodeStruct {
-	nodeData := this.data
+func (s *NodeStruct) UpdateData(value []byte) *NodeStruct {
+	nodeData := s.data
 	hasDiff := false
-	if len(this.data) == len(value) {
+	if len(s.data) == len(value) {
 		for i := 0; i < len(nodeData); i++ {
-			if this.data[i] != value[i] {
+			if s.data[i] != value[i] {
 				hasDiff = true
 			}
 		}
 	}
 	if !hasDiff {
-		return this
+		return s
 	}
-	this.backup = nodeData
-	this.data = value
-	this.updatetime = time.Now()
-	return this
+	s.backup = nodeData
+	s.data = value
+	s.updatetime = time.Now()
+	return s
 }
 
 func NodeInstance(key []byte, value []byte) *NodeStruct {
@@ -155,9 +153,9 @@ func NodeInstance(key []byte, value []byte) *NodeStruct {
 	}
 }
 
-func (this *NodeStruct) GetData() []byte {
-	return this.data
+func (s *NodeStruct) GetData() []byte {
+	return s.data
 }
-func (this *NodeStruct) GetName() []byte {
-	return this.name
+func (s *NodeStruct) GetName() []byte {
+	return s.name
 }

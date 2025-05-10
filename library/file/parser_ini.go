@@ -7,25 +7,15 @@ import (
 	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
-/**
-*parser ini conf file
-*desc:
-*[test]
-*    [..params]
-*        name:name1
-*        key:value
-*    [...params]
-*        name:name2
-*        key:value
- */
+// ParserIniContent /**
 func ParserIniContent(data []byte) ([]*TreeStruct, error) {
 	if data == nil {
 		return nil, fmt.Errorf("content is nil")
 	}
-	bytesList := [][]byte{}
+	var bytesList [][]byte
 
 	hasSlash := false
-	bytes := []byte{}
+	var bytes []byte
 	if data[len(data)-1] != byte(LineBreak) {
 		data = append(data, byte(LineBreak))
 	}
@@ -68,7 +58,7 @@ func initTreeFunc(bytesList [][]byte) []*TreeStruct {
 	infunc := InIntSliceSortedFunc(segment)
 	var rootTree = currentTree
 	//根节点设置为1
-	currentTree.SetHight(1)
+	currentTree.SetHeight(1)
 	for i := 0; i < len(bytesList); i++ {
 		bytes := bytesList[i]
 		bytesLen := len(bytes)
@@ -82,19 +72,26 @@ func initTreeFunc(bytesList [][]byte) []*TreeStruct {
 			}
 		}
 		treeStruct := TreeInstance()
-		currentHigh := currentTree.GetHight()
+		currentHigh := currentTree.GetHeight()
 		var nodeStruct *NodeStruct
 		if tempNum > 0 && len(bytes) > tempNum {
 			bytes = bytes[tempNum : bytesLen-1]
 
 			nodeStruct = NodeInstance(bytes, []byte{})
 			for tempNum < currentHigh {
-				currentTree = currentTree.GetParent()
-				currentHigh = currentTree.GetHight()
+				if currentTree != nil {
+					currentTree = currentTree.GetParent()
+					currentHigh = currentTree.GetHeight()
+				} else {
+					break
+				}
 			}
 			treeStruct.SetNode(nodeStruct)
 			treeStruct.SetParent(currentTree)
-			currentTree.SetChildren(treeStruct)
+			if currentTree != nil {
+				currentTree.SetChildren(treeStruct)
+			}
+
 			currentTree = treeStruct
 		} else if tempNum == 0 {
 			//type of key:vaule

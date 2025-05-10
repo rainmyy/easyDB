@@ -11,9 +11,7 @@ import (
 	. "github.com/rainmyy/easyDB/library/strategy"
 )
 
-/**
-*file struct
- */
+// File /**
 type File struct {
 	name     string
 	filepath string
@@ -22,40 +20,40 @@ type File struct {
 	mode     string
 	isDir    bool
 	/**
-	* 文件数据类型有四种，ini型数据，yal型数据，json型数据，data型数据，默认数据类型为data型
+	* 文件数据类型有四种，ini型数据，yaml型数据，json型数据，data型数据，默认数据类型为data型
 	 */
 	dataType int
 	modTime  time.Time
 	fileAbs  string
 }
 
-func (this *File) fileInfo() (*File, error) {
-	fi, err := os.Stat(this.fileAbs)
+func (f *File) fileInfo() (*File, error) {
+	fi, err := os.Stat(f.fileAbs)
 	if err != nil {
-		return this, err
+		return f, err
 	} else if os.IsNotExist(err) {
-		return this, err
+		return f, err
 	}
-	this.size = fi.Size()
-	this.mode = fi.Mode().String()
-	this.modTime = fi.ModTime()
-	this.isDir = fi.IsDir()
-	this.dataType = this.SetDataType()
-	return this, nil
+	f.size = fi.Size()
+	f.mode = fi.Mode().String()
+	f.modTime = fi.ModTime()
+	f.isDir = fi.IsDir()
+	f.dataType = f.SetDataType()
+	return f, nil
 }
 
-func (this *File) getFilePath(fullname string) {
+func (f *File) getFilePath(fullname string) {
 	fileAbs, err := filepath.Abs(fullname)
 	if err != nil {
 		return
 	}
 	fileName := path.Base(fullname)
-	this.name = fileName
-	this.fileAbs = fileAbs
+	f.name = fileName
+	f.fileAbs = fileAbs
 }
 
-func (this *File) SetDataType() (dataType int) {
-	fileSuffix := path.Ext(this.name)
+func (f *File) SetDataType() (dataType int) {
+	fileSuffix := path.Ext(f.name)
 	switch fileSuffix {
 	case IniSuffix:
 		dataType = IniType
@@ -68,19 +66,19 @@ func (this *File) SetDataType() (dataType int) {
 	}
 	return
 }
-func (this *File) GetDataType() int {
-	return this.dataType
+func (f *File) GetDataType() int {
+	return f.dataType
 }
-func (this *File) GetContent() []*TreeStruct {
-	return this.content
+func (f *File) GetContent() []*TreeStruct {
+	return f.content
 }
 
-func (this *File) createDir(fileName string) bool {
-	if this.checkFileExist(fileName) {
+func (f *File) createDir(fileName string) bool {
+	if f.checkFileExist(fileName) {
 		return true
 	}
 	paths, _ := filepath.Split(fileName)
-	if this.checkFileExist(paths) {
+	if f.checkFileExist(paths) {
 		return true
 	}
 	err := os.MkdirAll(paths, os.ModePerm)
@@ -91,7 +89,7 @@ func (this *File) createDir(fileName string) bool {
 	return true
 }
 
-func (this *File) checkFileExist(filename string) bool {
+func (f *File) checkFileExist(filename string) bool {
 	var exist = true
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		exist = false
@@ -99,7 +97,7 @@ func (this *File) checkFileExist(filename string) bool {
 	return exist
 }
 
-func FileInstance(name string) (*File, error) {
+func Instance(name string) (*File, error) {
 	fileObj := &File{}
 	fileObj.getFilePath(name)
 	fileObj, err := fileObj.fileInfo()
