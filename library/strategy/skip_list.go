@@ -14,6 +14,7 @@ type SkipList struct {
 type Element struct {
 	Score   float64
 	Value   interface{}
+	key     interface{}
 	forward []*Element
 }
 
@@ -31,8 +32,10 @@ func (e *Element) Next() *Element {
 	}
 	return nil
 }
-
-func New() *SkipList {
+func (elem *Element) Key() interface{} {
+	return elem.key
+}
+func NewSkipList() *SkipList {
 	return &SkipList{
 		header: &Element{forward: make([]*Element, maxLevel)},
 	}
@@ -108,4 +111,8 @@ func (sl *SkipList) Delete(score float64) *Element {
 		sl.len--
 	}
 	return x
+}
+
+func (sl *SkipList) Len() int {
+	return sl.len
 }
